@@ -15,12 +15,15 @@ type AuthMiddlewareConfig struct {
 }
 
 //
+var DefaultJWTConfig = middleware.JWTConfig{
+	Claims:     &service.JWTCustomClaims{},
+	SigningKey: service.JWTSecret,
+}
+
+//
 func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 	if config.JwtConfig == nil {
-		config.JwtConfig = &middleware.JWTConfig{
-			Claims:     &service.JWTCustomClaims{},
-			SigningKey: service.JWTSecret,
-		}
+		config.JwtConfig = &DefaultJWTConfig
 	}
 	//
 	var jwtMiddleware = middleware.JWTWithConfig(*config.JwtConfig)

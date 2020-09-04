@@ -1,20 +1,12 @@
 package handler
 
 import (
-	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/repository"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
-	"html/template"
-	"io"
-	"io/ioutil"
-	"os"
-	"strings"
 )
 
 //
@@ -23,8 +15,8 @@ type Handler struct {
 	service    *service.Service
 	repository *repository.Repository
 
-	templates *template.Template
-	Inertia   *inertia.Inertia
+	// templates *template.Template
+	// Inertia   *inertia.Inertia
 }
 
 //
@@ -34,65 +26,9 @@ func NewHandler(echo *echo.Echo) (this *Handler) {
 	this.repository = repository.NewRepository(repository.DB.Conn)
 	this.service = service.NewService(this.repository)
 
-	this.Inertia = inertia.NewInertia()
-	this.Inertia.SetMixVersion()
-	this.templates = template.Must(template.New("").Funcs(template.FuncMap{
-		"inertia": func(v interface{}) template.HTML {
-			retVal, _ := json.Marshal(v)
-			return template.HTML(fmt.Sprintf("<div id='app' data-page='%s'></div>", string(retVal)))
-		},
-		"json_encode": func(v interface{}) template.JS {
-			retVal, _ := json.Marshal(v)
-			return template.JS(string(retVal))
-		},
-		"json_encode_raw": func(v interface{}) string {
-			retVal, _ := json.Marshal(v)
-			return string(retVal)
-		},
-		"routes": func() template.JS {
-			this.echo.Routes()
-			retVal, _ := json.Marshal(this.echo.Routes())
-			return template.JS(string(retVal))
-		},
-		"routes_ziggy": func(v interface{}) template.HTML {
-			ziggy := inertia.NewZiggy(this.echo, v.(map[string]interface{}))
-			retVal, _ := json.Marshal(ziggy)
-			return template.HTML(fmt.Sprintf("<script>var Ziggy = %s;</script>", string(retVal)))
-		},
-		"mix": func(path string) template.HTML {
-			if !strings.HasPrefix(path, "/") {
-				path = "/" + path
-			}
-
-			manifestFile, err := os.Open(service.GetEnvOrDefault("PUBLIC_PATH", "public") + "/mix-manifest.json")
-			defer manifestFile.Close()
-			if err != nil {
-				return template.HTML(path)
-			}
-
-			manifestData, err := ioutil.ReadAll(manifestFile)
-			if err != nil {
-				return template.HTML(path)
-			}
-			var manifest map[string]string
-			if err = json.Unmarshal(manifestData, &manifest); err != nil {
-				return template.HTML(path)
-			}
-
-			return template.HTML(manifest[path])
-		},
-	}).ParseGlob(service.GetEnvOrDefault("RESOURCES_PATH", "resources") + "/views/*.html"))
+	// this.Inertia = inertia.NewInertia(echo)
+	// this.Inertia.SetMixVersion()
 	return this
-}
-
-// Render renders a template document
-func (this *Handler) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	// Add global methods if data is a map
-	if viewContext, isMap := data.(map[string]interface{}); isMap {
-		viewContext["reverse"] = c.Echo().Reverse
-	}
-
-	return this.templates.ExecuteTemplate(w, name, data)
 }
 
 //

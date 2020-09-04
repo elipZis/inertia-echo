@@ -1,8 +1,7 @@
 package inertia
 
 import (
-	"elipzis.com/inertia-echo/service"
-	"fmt"
+	"elipzis.com/inertia-echo/util"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
@@ -30,32 +29,39 @@ func NewResponse(component string, props map[string]interface{}, rootView string
 	return this
 }
 
-func (this Response) With(key string, value interface{}) Response {
-	this.props[key] = value
-	return this
-}
-
-func (this Response) Withs(values map[string]interface{}) Response {
-	for key, value := range values {
-		this.props[key] = value
+//
+func (this Response) With(key interface{}, value interface{}) Response {
+	switch key.(type) {
+	case string:
+		this.props[key.(string)] = value
+		break
+	case map[string]interface{}:
+		for k, v := range key.(map[string]interface{}) {
+			this.props[k] = v
+		}
 	}
-
 	return this
 }
 
-func (this Response) WithViewData(key string, value interface{}) Response {
-	this.viewData[key] = value
-	return this
-}
+//
+func (this Response) WithViewData(key interface{}, value interface{}) Response {
+	switch key.(type) {
+	case string:
+		this.viewData[key.(string)] = value
+		break
+	case map[string]interface{}:
+		for k, v := range key.(map[string]interface{}) {
+			this.props[k] = v
+		}
 
-func (this Response) WithsViewData(values map[string]interface{}) Response {
-	for key, value := range values {
-		this.viewData[key] = value
+		for k, v := range key.(map[string]interface{}) {
+			this.viewData[k] = v
+		}
 	}
-
 	return this
 }
 
+//
 func (this Response) ToResponse(c echo.Context) error {
 	req := c.Request()
 
@@ -75,7 +81,7 @@ func (this Response) ToResponse(c echo.Context) error {
 	}
 
 	// Many Question Marks here????????????
-	service.WalkRecursive(props, func(prop interface{}) {
+	util.WalkRecursive(props, func(prop interface{}) {
 		type HandlerType func() interface{}
 		switch prop.(type) {
 		case func() interface{}:
@@ -102,8 +108,6 @@ func (this Response) ToResponse(c echo.Context) error {
 	if req.Header.Get(HeaderPrefix) == "true" {
 		c.Response().Header().Set("Vary", "Accept")
 		c.Response().Header().Set("X-Inertia", "true")
-		fmt.Print("HIer ")
-		fmt.Println(this.status)
 		return c.JSON(this.status, page)
 	}
 

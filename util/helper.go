@@ -1,4 +1,4 @@
-package service
+package util
 
 import (
 	"os"
@@ -13,7 +13,7 @@ func MergeMaps(a map[string]interface{}, b map[string]interface{}) map[string]in
 	return a
 }
 
-//
+// Check if a given value exists in the given array
 func InArray(val interface{}, array interface{}) (exists bool, index int) {
 	exists = false
 	index = -1
@@ -34,7 +34,7 @@ func InArray(val interface{}, array interface{}) (exists bool, index int) {
 	return
 }
 
-//
+// Iterate over a given map recursively and call the given func on every value
 func WalkRecursive(values map[string]interface{}, fn func(interface{})) {
 	for _, v := range values {
 		switch v.(type) {
@@ -46,7 +46,7 @@ func WalkRecursive(values map[string]interface{}, fn func(interface{})) {
 	}
 }
 
-//
+// Get an environment variable or return the default value
 func GetEnvOrDefault(key string, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value

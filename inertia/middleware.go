@@ -1,17 +1,13 @@
 package inertia
 
 import (
-	"bufio"
-	"bytes"
-	"elipzis.com/inertia-echo/service"
+	"elipzis.com/inertia-echo/util"
 	"fmt"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"io"
-	"net"
+	"log"
 	"net/http"
-	"strconv"
 )
 
 //
@@ -20,31 +16,18 @@ type MiddlewareConfig struct {
 	Skipper middleware.Skipper
 }
 
-type DumpResponseWriter struct {
-	io.Writer
-	http.ResponseWriter
-}
-
-func (w *DumpResponseWriter) WriteHeader(code int) {
-	w.ResponseWriter.WriteHeader(code)
-}
-
-func (w *DumpResponseWriter) Write(b []byte) (int, error) {
-	return w.Writer.Write(b)
-}
-
-func (w *DumpResponseWriter) Flush() {
-	w.ResponseWriter.(http.Flusher).Flush()
-}
-
-func (w *DumpResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
-	return w.ResponseWriter.(http.Hijacker).Hijack()
+// Create a default Inertia Middleware for the given echo reference
+// if the Inertia instance itself is not required in other instances
+func Middleware(echo *echo.Echo) echo.MiddlewareFunc {
+	return MiddlewareWithConfig(MiddlewareConfig{
+		Inertia: NewInertia(echo),
+	})
 }
 
 // The Inertia Middleware to check every request for what it needs
 func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 	if config.Inertia == nil {
-		config.Inertia = NewInertia()
+		log.Fatal("[Inertia] Please provide an Inertia reference with your config!")
 	}
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -54,35 +37,30 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 				return next(c)
 			}
 
-			// Response
-			resBody := new(bytes.Buffer)
-			mw := io.MultiWriter(c.Response().Writer, resBody)
-			writer := &DumpResponseWriter{Writer: mw, ResponseWriter: c.Response().Writer}
-			c.Response().Writer = writer
-
 			// Run Inertia post
 			if err := next(c); err != nil {
-				c.Error(err)
-
+				fmt.Println("Error")
 				fmt.Println(err)
 
-				code := http.StatusInternalServerError
-				message := err.Error()
-				if he, ok := err.(*echo.HTTPError); ok {
-					code = he.Code
-					message = he.Message.(string)
-				}
-				errorMsg := map[string]interface{}{
-					strconv.Itoa(code): message,
-				}
+				// code := http.StatusInternalServerError
+				// message := err.Error()
+				// if he, ok := err.(*echo.HTTPError); ok {
+				// 	code = he.Code
+				// 	message = he.Message.(string)
+				// }
+				// errorMsg := map[string]interface{}{
+				// 	strconv.Itoa(code): message,
+				// }
+				//
+				// // Add general errors in case some pop up
+				// errors, ok := config.Inertia.GetShared("errors")
+				// if !ok {
+				// 	config.Inertia.Share("errors", errorMsg)
+				// } else {
+				// 	config.Inertia.Share("errors", util.MergeMaps(errors.(map[string]interface{}), errorMsg))
+				// }
 
-				// Add general errors in case some pop up
-				errors, ok := config.Inertia.GetShared("errors")
-				if !ok {
-					config.Inertia.Share("errors", errorMsg)
-				} else {
-					config.Inertia.Share("errors", service.MergeMaps(errors.(map[string]interface{}), errorMsg))
-				}
+				c.Error(err)
 			}
 
 			req := c.Request()
@@ -93,7 +71,7 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 			}
 
 			if req.Method == "GET" && req.Header.Get(HeaderVersion) != config.Inertia.GetVersion() {
-				// $request->session()->reflash();???
+				// Reflash?
 				if s, err := session.Get("session", c); err == nil {
 					flashes := s.Flashes()
 					config.Inertia.Share("flash", flashes)
@@ -106,15 +84,9 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 				return c.String(http.StatusConflict, "")
 			}
 
-			if exists, _ := service.InArray(req.Method, []string{"PUT", "PATCH", "DELETE"}); exists && res.Status == 302 {
+			if exists, _ := util.InArray(req.Method, []string{"PUT", "PATCH", "DELETE"}); exists && res.Status == 302 {
 				res.Status = http.StatusSeeOther
 			}
-
-			// Error handling
-			fmt.Println(res.Status)
-			fmt.Println(c)
-			fmt.Println(res.Committed)
-			fmt.Println(string(resBody.Bytes()))
 
 			return nil
 		}

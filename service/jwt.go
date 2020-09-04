@@ -2,6 +2,7 @@ package service
 
 import (
 	"elipzis.com/inertia-echo/repository/model"
+	"elipzis.com/inertia-echo/util"
 	"github.com/dgrijalva/jwt-go"
 	_ "github.com/joho/godotenv/autoload"
 	"strconv"
@@ -16,12 +17,12 @@ type JWTCustomClaims struct {
 	jwt.StandardClaims
 }
 
-var JWTSecret = []byte(GetEnvOrDefault("JWT_SECRET", "supersecretjwtsecret"))
+var JWTSecret = []byte(util.GetEnvOrDefault("JWT_SECRET", "supersecretjwtsecret"))
 var JWTLifetime time.Duration
 
 //
 func init() {
-	lifetime, err := strconv.Atoi(GetEnvOrDefault("JWT_LIFETIME_HOURS", "24"))
+	lifetime, err := strconv.Atoi(util.GetEnvOrDefault("JWT_LIFETIME_HOURS", "24"))
 	if err != nil {
 		lifetime = 720
 	}
@@ -34,7 +35,7 @@ func (this *Service) GenerateToken(user *model.User) *string {
 		user.Id,
 		user.Email,
 		jwt.StandardClaims{
-			Issuer:    GetEnvOrDefault("NAME", "elipzis.com/inertia-echo"),
+			Issuer:    util.GetEnvOrDefault("NAME", "elipzis.com/inertia-echo"),
 			ExpiresAt: time.Now().Add(JWTLifetime).Unix(),
 		},
 	}

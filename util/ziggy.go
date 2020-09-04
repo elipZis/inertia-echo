@@ -1,4 +1,4 @@
-package inertia
+package util
 
 import (
 	"github.com/labstack/echo/v4"
@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// https://github.com/tightenco/ziggy base struct to export compatible Echo routes
 type Ziggy struct {
 	BaseDomain   string                `json:"baseDomain"`
 	BasePort     int                   `json:"basePort"`
@@ -15,6 +16,7 @@ type Ziggy struct {
 	Routes       map[string]ZiggyRoute `json:"namedRoutes"`
 }
 
+// A single https://github.com/tightenco/ziggy route
 type ZiggyRoute struct {
 	Uri     string   `json:"uri"`
 	Methods []string `json:"methods"`
