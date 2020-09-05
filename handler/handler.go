@@ -5,6 +5,7 @@ import (
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 )
@@ -105,6 +106,7 @@ func (this *Handler) bindAndValidateRequest(c echo.Context, model interface{}) e
 	if err := this.bindRequest(c, model); err != nil {
 		return err
 	}
+	fmt.Println(model)
 	if err := this.validateRequest(c, model); err != nil {
 		return err
 	}

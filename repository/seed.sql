@@ -1,3 +1,3 @@
-/* Seed a test user (test@test.com/test123) */
+/* Seed a test user (johndoe@example.com/secret) */
 INSERT INTO users("email", "password") VALUES
-('test@test.com', '$2y$10$6sjOVBuQtmNxf64sXazkeugeFCnXOi7cMPYQd/EQq2oqOI95DLgQW');
+('johndoe@example.com', '$2y$10$i1jALNbm199VCCNpA0hNSe/3e34WOPdJy1yk7X.GrNAaJqGaUFgMK');

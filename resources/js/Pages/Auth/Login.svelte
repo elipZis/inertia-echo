@@ -51,13 +51,12 @@
                 <div class="mx-auto mt-6 w-24 border-b-2"/>
 
                 {(console.log(errors), '')}
-                <span>{errors.toString()}</span>
                 <TextInput
                     className="mt-10"
                     label="Email"
                     name="email"
                     type="email"
-                    errors={errors.email}
+                    errors={errors["User.Email"]}
                     value={values.email}
                     onChange={handleChange}
                 />
@@ -67,7 +66,7 @@
                     label="Password"
                     name="password"
                     type="password"
-                    errors={errors.password}
+                    errors={errors["User.Password"]}
                     value={values.password}
                     onChange={handleChange}
                 />

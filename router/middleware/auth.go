@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"elipzis.com/inertia-echo/service"
+	"elipzis.com/inertia-echo/util"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
-	"strings"
 )
 
 //
@@ -41,10 +41,7 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 				// c.Error(err)
 
 				// Redirect to login in case something wrong happened while checking the url
-				req, scheme := c.Request(), c.Scheme()
-				host := req.Host
-				url := scheme + "://" + host + req.RequestURI
-				url = strings.TrimSuffix(url, "/")
+				url := util.GetBaseUrl(c)
 				// Try to find a route named "login"
 				for _, route := range c.Echo().Routes() {
 					if route.Name == "login" {

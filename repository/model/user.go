@@ -17,8 +17,8 @@ type UserModel interface {
 type User struct {
 	Id       uint    `gorm:"primary_key" json:"-"`
 	Email    string  `gorm:"unique_index;not null" validate:"required,email"`
-	Password string  `gorm:"not null" json:"-" validate:"required,min=6"`
-	Token    *string `gorm:"null" json:"-"`
+	Password string  `gorm:"not null" validate:"required,min=6"`
+	Token    *string `gorm:"null"`
 
 	*trait.Timestampable
 }

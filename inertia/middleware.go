@@ -2,7 +2,6 @@ package inertia
 
 import (
 	"elipzis.com/inertia-echo/util"
-	"fmt"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -39,9 +38,6 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 
 			// Run Inertia post
 			if err := next(c); err != nil {
-				fmt.Println("Error")
-				fmt.Println(err)
-
 				// code := http.StatusInternalServerError
 				// message := err.Error()
 				// if he, ok := err.(*echo.HTTPError); ok {

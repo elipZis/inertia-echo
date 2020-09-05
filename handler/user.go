@@ -23,27 +23,27 @@ func (this *Handler) Register(c echo.Context) error {
 }
 
 //
-func (this *Handler) LoginForm(c echo.Context) error {
-	return c.Render(200, "Auth/Login", map[string]interface{}{})
-	// return this.Inertia.Render("Auth/Login", map[string]interface{}{}).ToResponse(c)
-}
-
+// func (this *Handler) LoginForm(c echo.Context) error {
+// 	return c.Render(200, "Auth/Login", map[string]interface{}{})
+// 	// return this.Inertia.Render("Auth/Login", map[string]interface{}{}).ToResponse(c)
+// }
 //
-func (this *Handler) Login(c echo.Context) error {
-	user := model.User{}
-	if err := this.bindAndValidateRequest(c, &user); err != nil {
-		// return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
-		// return c.JSON(http.StatusUnprocessableEntity, err)
-		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-	}
-	loggedInUser, err := this.service.Login(user.Email, user.Password)
-	if err != nil {
-		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-	}
-	return c.JSON(http.StatusOK, loggedInUser)
-}
+// //
+// func (this *Handler) Login(c echo.Context) error {
+// 	user := model.User{}
+// 	if err := this.bindAndValidateRequest(c, &user); err != nil {
+// 		// return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
+// 		// return c.JSON(http.StatusUnprocessableEntity, err)
+// 		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
+// 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+// 	}
+// 	loggedInUser, err := this.service.Login(user.Email, user.Password)
+// 	if err != nil {
+// 		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
+// 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+// 	}
+// 	return c.JSON(http.StatusOK, loggedInUser)
+// }
 
 //
 func (this *Handler) GetUser(c echo.Context) error {

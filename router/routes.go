@@ -2,6 +2,7 @@ package router
 
 import (
 	"elipzis.com/inertia-echo/handler"
+	"elipzis.com/inertia-echo/router/middleware"
 	"github.com/labstack/echo/v4"
 )
 
@@ -29,11 +30,11 @@ func (router *Router) Register(rootGroup *echo.Group) {
 	// Authentication Routes
 	rootGroup.GET("/login", controller.LoginForm).Name = "login"
 	rootGroup.POST("/login", controller.Login).Name = "login.attempt"
-	rootGroup.POST("/register", controller.Register).Name = "register"
+	rootGroup.POST("/logout", controller.Logout).Name = "logout"
 
 	// Index
-	// rootGroup.GET("/", controller.DashboardIndex, middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{})).Name = "dashboard"
-	rootGroup.GET("/", controller.DashboardIndex).Name = "dashboard"
+	rootGroup.GET("/", controller.DashboardIndex, middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{})).Name = "dashboard"
+	// rootGroup.GET("/", controller.DashboardIndex).Name = "dashboard"
 	rootGroup.GET("/organizations", controller.OrganizationsIndex).Name = "organizations"
 
 	// User handling

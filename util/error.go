@@ -1,19 +1,22 @@
 package util
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 // Error container for return messages
 type Error struct {
-	Errors map[string][]string `json:"errors"`
+	Errors map[string][]interface{} `json:"errors"`
 }
 
 // Create nicely formatted errors to return
 func NewError() (this *Error) {
 	this = new(Error)
-	this.Errors = make(map[string][]string)
+	this.Errors = make(map[string][]interface{})
 	return this
 }
 
@@ -24,18 +27,35 @@ func (this *Error) AddError(err error, name ...string) *Error {
 	if len(name) > 0 {
 		key = name[0]
 	}
+
 	switch v := err.(type) {
 	case *echo.HTTPError:
 		if len(name) <= 0 {
 			key = strconv.Itoa(v.Code)
 		}
 		message = v.Message.(string)
+		break
+	case validator.ValidationErrors:
+		r, _ := regexp.Compile(`Key:(?P<Key>.*)Error:(?P<Value>.*)`)
+		res := r.FindStringSubmatch(v.Error())
+		names := r.SubexpNames()
+		for i, _ := range res {
+			if i != 0 {
+				if names[i] == "Key" {
+					key = strings.TrimSuffix(strings.TrimPrefix(strings.TrimSpace(res[i]), "'"), "'")
+				}
+				if names[i] == "Value" {
+					message = strings.TrimSpace(res[i])
+				}
+			}
+		}
 	}
 
+	// this.Errors[key] = message
 	if errors, ok := this.Errors[key]; ok {
 		this.Errors[key] = append(errors, message)
 	} else {
-		this.Errors[key] = []string{message}
+		this.Errors[key] = []interface{}{message}
 	}
 
 	return this
@@ -61,5 +81,7 @@ func (this *Error) Render(c echo.Context, name string, status ...int) error {
 	if len(status) > 0 {
 		code = status[0]
 	}
-	return c.Render(code, name, this.Errors)
+	return c.Render(code, name, map[string]interface{}{
+		"errors": this.Errors,
+	})
 }
