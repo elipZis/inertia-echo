@@ -21,7 +21,7 @@ func (this *Service) Login(email string, password string) (*model.User, error) {
 
 	// Generate a token to identify the user
 	user.Token = this.GenerateToken(user)
-	return user, nil
+	return user, this.repository.UpdateUser(user)
 }
 
 //

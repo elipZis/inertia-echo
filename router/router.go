@@ -2,7 +2,6 @@ package router
 
 import (
 	"context"
-	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/util"
 	"fmt"
 	"github.com/gorilla/sessions"
@@ -40,7 +39,7 @@ func NewRouter() (this *Router) {
 	}))
 	this.Echo.Use(session.Middleware(sessions.NewCookieStore([]byte(util.GetEnvOrDefault("SESSION_SECRET", "supersecretsessionsecret")))))
 	this.Echo.Static("/", util.GetEnvOrDefault("INERTIA_PUBLIC_PATH", "public"))
-	this.Echo.Use(inertia.Middleware(this.Echo))
+	// this.Echo.Use(inertia.Middleware(this.Echo))
 
 	// go-playground/validation
 	this.Echo.Validator = NewValidator()

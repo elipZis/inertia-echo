@@ -1,25 +1,24 @@
 <script>
     import { InertiaLink, page } from '@inertiajs/inertia-svelte';
     import Icon from '@/Shared/Icon.svelte';
+    import route from '../../../node_modules/ziggy-js'
 
-    const route = window.route;
-console.log($page);
-    let { auth } = $page;
-    $: auth = $page.auth;
+    let { user } = $page;
+    $: user = $page.user;
 
     let menuOpened = false;
 </script>
 
 <div class="bg-white border-b w-full p-4 md:py-0 md:px-12 text-sm d:text-md flex justify-between items-center">
-    <div class="mt-1 mr-4">{auth.user.account.name}</div>
+    <div class="mt-1 mr-4">{user.Email}</div>
     <div class="relative">
         <div
             class="flex items-center cursor-pointer select-none group"
             on:click={() => menuOpened = true}
         >
             <div class="text-gray-800 group-hover:text-indigo-600 focus:text-indigo-600 mr-1 whitespace-no-wrap">
-                <span>{auth.user.first_name}</span>
-                <span class="ml-1 hidden md:inline">{auth.user.last_name}</span>
+                <span>{user.first_name}</span>
+                <span class="ml-1 hidden md:inline">{user.last_name}</span>
             </div>
 
             <Icon
@@ -32,7 +31,7 @@ console.log($page);
             <div
                 class="whitespace-no-wrap absolute z-20 mt-8 left-auto top-0 right-0 py-2 shadow-xl bg-white rounded text-sm">
                 <InertiaLink
-                    href={route('users.edit', auth.user.id)}
+                    href={route('users.edit', user.id)}
                     class="block px-6 py-2 hover:bg-indigo-600 hover:text-white"
                 >
                     My Profile

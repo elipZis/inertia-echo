@@ -3,6 +3,7 @@ package handler
 import (
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -74,6 +75,7 @@ func (this *Handler) UpdateUser(c echo.Context) error {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
 	}
+	fmt.Println(user)
 	// Store the new user data
 	if user.Id <= 0 {
 		id, err := this.getUserIdFromContext(c)

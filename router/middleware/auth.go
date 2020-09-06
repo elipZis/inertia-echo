@@ -1,11 +1,15 @@
 package middleware
 
 import (
+	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
 	"elipzis.com/inertia-echo/util"
+	"fmt"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
+	"reflect"
 )
 
 //
@@ -35,9 +39,26 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 				return next(c)
 			}
 
+			sess, err := session.Get("session", c)
+			if err == nil {
+				if user, ok := sess.Values["user"]; ok {
+					fmt.Println("TOKEN", *user.(*model.User).Token)
+					// Set the JWT Token as header to "fool" the JWT Middleware
+					c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", *user.(*model.User).Token))
+				}
+			}
+
+			fmt.Println(c.Request().Header)
+
 			// Fire the Echo JWT first
 			jwtFunc := jwtMiddleware(next)
 			if err := jwtFunc(c); err != nil {
+				fmt.Println("Auth error", err)
+				fmt.Println(reflect.TypeOf(err))
+				fmt.Println(err.(*echo.HTTPError).Internal)
+				fmt.Println(err.(*echo.HTTPError).Code)
+				fmt.Println(err.(*echo.HTTPError).Message)
+				fmt.Println(err.(*echo.HTTPError).Unwrap())
 				// c.Error(err)
 
 				// Redirect to login in case something wrong happened while checking the url
@@ -52,6 +73,7 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 				return c.Redirect(http.StatusTemporaryRedirect, url+"/login")
 			}
 
+			return nil
 			return next(c)
 		}
 	}

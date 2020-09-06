@@ -9,7 +9,7 @@
     <div class="h-screen flex flex-col">
         <div class="md:flex">
             <TopHeader />
-<!--            <BottomHeader />-->
+            <BottomHeader />
         </div>
 
         <div class="flex flex-grow overflow-hidden">

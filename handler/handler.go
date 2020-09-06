@@ -1,11 +1,11 @@
 package handler
 
 import (
+	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/repository"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
 	"errors"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 )
@@ -17,7 +17,7 @@ type Handler struct {
 	repository *repository.Repository
 
 	// templates *template.Template
-	// Inertia   *inertia.Inertia
+	Inertia *inertia.Inertia
 }
 
 //
@@ -27,9 +27,17 @@ func NewHandler(echo *echo.Echo) (this *Handler) {
 	this.repository = repository.NewRepository(repository.DB.Conn)
 	this.service = service.NewService(this.repository)
 
-	// this.Inertia = inertia.NewInertia(echo)
+	this.Inertia = inertia.NewInertia(echo)
 	// this.Inertia.SetMixVersion()
 	return this
+}
+
+//
+func (this *Handler) Render(c echo.Context, code int, name string, data map[string]interface{}) error {
+	if user, err := this.getUserFromContext(c); err == nil {
+		data["user"] = user
+	}
+	return c.Render(code, name, data)
 }
 
 //
@@ -106,7 +114,6 @@ func (this *Handler) bindAndValidateRequest(c echo.Context, model interface{}) e
 	if err := this.bindRequest(c, model); err != nil {
 		return err
 	}
-	fmt.Println(model)
 	if err := this.validateRequest(c, model); err != nil {
 		return err
 	}

@@ -1,13 +1,13 @@
 import {InertiaApp} from '@inertiajs/inertia-svelte'
 import axios from 'axios'
 
-axios.interceptors.request.use(
-    config => {
-        config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
-        return config;
-    },
-    error => Promise.reject(error),
-);
+// axios.interceptors.request.use(
+//     config => {
+//         config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('inertiaToken');
+//         return config;
+//     },
+//     error => Promise.reject(error),
+// );
 // Add a 401 response interceptor
 axios.interceptors.response.use(function (response) {
     return response;
