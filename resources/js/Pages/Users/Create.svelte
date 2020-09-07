@@ -11,40 +11,37 @@
 
     const route = window.route;
 
-    $: errors = $page.errors;
+    $: errors = $page.errors ?? [];
 
     let sending = false;
     let values = {
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-        owner: '0',
-        photo: ''
+        FirstName: '',
+        LastName: '',
+        Email: '',
+        Password: '',
+        Owner: '0',
+        Photo: ''
     };
 
     function handleChange({ target: { name, value } }) {
         values = {
             ...values,
-            [key]: value
+            [name]: value
         };
     }
 
     function handleFileChange(file) {
         values = {
             ...values,
-            photo: file
+            Photo: file
         };
     }
 
     function handleSubmit() {
         sending = true;
-
-        // since we are uploading an image
-        // we need to use FormData object
-        // for more info check utils.js
         const formData = toFormData(values);
-
+        console.log(values);
+        console.log(formData);
         Inertia.post(route('users.store'), formData).then(() =>  sending = false);
     }
 </script>
@@ -72,47 +69,47 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name"
-                        name="first_name"
+                        name="FirstName"
                         errors={errors.first_name}
-                        value={values.first_name}
+                        value={values.FirstName}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name"
-                        name="last_name"
+                        name="LastName"
                         errors={errors.last_name}
-                        value={values.last_name}
+                        value={values.LastName}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Email"
-                        name="email"
+                        name="Email"
                         type="email"
                         errors={errors.email}
-                        value={values.email}
+                        value={values.Email}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Password"
-                        name="password"
+                        name="Password"
                         type="password"
                         errors={errors.password}
-                        value={values.password}
+                        value={values.Password}
                         onChange={handleChange}
                     />
 
                     <SelectInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Owner"
-                        name="owner"
+                        name="Owner"
                         errors={errors.owner}
-                        value={values.owner}
+                        value={values.Owner}
                         onChange={handleChange}
                     >
                         <option value="1">Yes</option>
@@ -122,10 +119,10 @@
                     <FileInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Photo"
-                        name="photo"
+                        name="Photo"
                         accept="image/*"
                         errors={errors.photo}
-                        value={values.photo}
+                        value={values.Photo}
                         onChange={handleFileChange}
                     />
                 </div>

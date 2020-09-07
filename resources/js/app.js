@@ -1,6 +1,9 @@
 import {InertiaApp} from '@inertiajs/inertia-svelte'
 import axios from 'axios'
+import route from '../../node_modules/ziggy-js'
 
+// Import Ziggy globally
+window.route = route;
 // axios.interceptors.request.use(
 //     config => {
 //         config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('inertiaToken');

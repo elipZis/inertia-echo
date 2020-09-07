@@ -17,8 +17,8 @@
             on:click={() => menuOpened = true}
         >
             <div class="text-gray-800 group-hover:text-indigo-600 focus:text-indigo-600 mr-1 whitespace-no-wrap">
-                <span>{user.first_name}</span>
-                <span class="ml-1 hidden md:inline">{user.last_name}</span>
+                <span>{user.FirstName}</span>
+                <span class="ml-1 hidden md:inline">{user.LastName}</span>
             </div>
 
             <Icon
@@ -31,7 +31,7 @@
             <div
                 class="whitespace-no-wrap absolute z-20 mt-8 left-auto top-0 right-0 py-2 shadow-xl bg-white rounded text-sm">
                 <InertiaLink
-                    href={route('users.edit', user.id)}
+                    href={route('users.edit', { user: user.Id })}
                     class="block px-6 py-2 hover:bg-indigo-600 hover:text-white"
                 >
                     My Profile

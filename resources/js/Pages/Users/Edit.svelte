@@ -15,15 +15,16 @@
 
     let { user } = $page;
     $: user = $page.user;
-    $: errors = $page.errors;
+    $: errors = $page.errors ?? [];
 
     let sending = false;
     let values = {
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
-        email: user.email || '',
-        password: user.password || '',
-        owner: user.owner ? '1' : '0' || '0'
+        id: user.Id,
+        first_name: user.FirstName || '',
+        last_name: user.LastName || '',
+        email: user.Email || '',
+        password: user.Password || '',
+        owner: '0',//user.owner ? '1' : '0' || '0'
         // photo: '',
     };
 
@@ -43,27 +44,13 @@
 
     function handleSubmit() {
         sending = true;
-
-        // since we are uploading an image
-        // we need to use FormData object
-
-        // NOTE: When working with Laravel PUT/PATCH requests and FormData
-        // you SHOULD send POST request and fake the PUT request like this.
-        // For more info check utils.jf file
-        const formData = toFormData(values, 'PUT');
-
-        Inertia.post(route('users.update', user.id), formData).then(() => sending = false);
+        const formData = toFormData(values);
+        Inertia.post(route('users.update'), formData).then(() => sending = false);
     }
 
     function destroy() {
         if (confirm('Are you sure you want to delete this user?')) {
-            Inertia.delete(route('users.destroy', user.id));
-        }
-    }
-
-    function restore() {
-        if (confirm('Are you sure you want to restore this user?')) {
-            Inertia.put(route('users.restore', user.id));
+            Inertia.delete(route('users.destroy', { user: user.Id }));
         }
     }
 </script>
@@ -86,15 +73,9 @@
             </h1>
 
             {#if user.photo}
-                <img class="block w-8 h-8 rounded-full ml-4" src={user.photo} alt={user.name} />
+                <img class="block w-8 h-8 rounded-full ml-4" src={user.photo} alt={user.FirstName + " " + user.LastName} />
             {/if}
         </div>
-
-        {#if user.deleted_at}
-            <TrashedMessage onRestore={restore}>
-                This contact has been deleted.
-            </TrashedMessage>
-        {/if}
 
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
@@ -161,7 +142,7 @@
                 </div>
 
                 <div class="px-8 py-4 bg-gray-100 border-t border-gray-200 flex items-center">
-                    {#if !user.deleted_at}
+                    {#if !user.DeletedAt}
                         <DeleteButton onDelete={destroy}>Delete User</DeleteButton>
                     {/if}
 

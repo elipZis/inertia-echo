@@ -10,41 +10,15 @@ import (
 )
 
 //
-func (this *Handler) Register(c echo.Context) error {
-	user := model.User{}
-	if err := this.bindAndValidateRequest(c, &user); err != nil {
+func (this *Handler) Users(c echo.Context) error {
+	if users, err := this.repository.GetUsers(); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
+	} else {
+		return this.Render(c, http.StatusOK, "Users/Index", map[string]interface{}{
+			"users": users,
+		})
 	}
-	if err := this.service.Register(&user); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
-	}
-	return c.JSON(http.StatusCreated, user)
 }
-
-//
-// func (this *Handler) LoginForm(c echo.Context) error {
-// 	return c.Render(200, "Auth/Login", map[string]interface{}{})
-// 	// return this.Inertia.Render("Auth/Login", map[string]interface{}{}).ToResponse(c)
-// }
-//
-// //
-// func (this *Handler) Login(c echo.Context) error {
-// 	user := model.User{}
-// 	if err := this.bindAndValidateRequest(c, &user); err != nil {
-// 		// return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
-// 		// return c.JSON(http.StatusUnprocessableEntity, err)
-// 		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
-// 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-// 	}
-// 	loggedInUser, err := this.service.Login(user.Email, user.Password)
-// 	if err != nil {
-// 		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
-// 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-// 	}
-// 	return c.JSON(http.StatusOK, loggedInUser)
-// }
 
 //
 func (this *Handler) GetUser(c echo.Context) error {
@@ -69,27 +43,56 @@ func (this *Handler) GetUser(c echo.Context) error {
 }
 
 //
+func (this *Handler) EditUser(c echo.Context) error {
+	userId := this.getAnyParamOrDefault(c, "user")
+	if userId != "" {
+		id, _ := strconv.Atoi(userId)
+		if user, err := this.repository.GetUserByID(uint(id)); err != nil {
+			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		} else {
+			return this.Render(c, http.StatusOK, "Users/Edit", map[string]interface{}{
+				"user": user,
+			})
+		}
+	}
+	return util.NewError().JSON(c, http.StatusNotFound)
+}
+
+//
+func (this *Handler) CreateUser(c echo.Context) error {
+	return this.Render(c, http.StatusOK, "Users/Create", map[string]interface{}{})
+}
+
+//
 func (this *Handler) UpdateUser(c echo.Context) error {
 	user := model.User{}
 	if err := this.bindRequest(c, &user); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
 	}
-	fmt.Println(user)
-	// Store the new user data
+	// No id, no update
 	if user.Id <= 0 {
-		id, err := this.getUserIdFromContext(c)
-		if err != nil {
-			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-			// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
-		}
-		user.Id = id
+		return util.NewError().JSON(c, http.StatusUnprocessableEntity)
 	}
 	//
 	err := this.repository.UpdateUser(&user)
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
-		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
 	}
-	return c.JSON(http.StatusOK, user)
+	return c.Redirect(http.StatusOK, "/users")
+}
+
+//
+func (this *Handler) StoreUser(c echo.Context) error {
+	user := model.User{}
+	if err := this.bindRequest(c, &user); err != nil {
+		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+	}
+	//
+	err := this.repository.CreateUser(&user)
+	if err != nil {
+		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+	}
+	fmt.Println("STORE REDIRECT")
+	fmt.Println(util.GetRedirectUrl(c, "/users"))
+	return c.Redirect(http.StatusFound, util.GetRedirectUrl(c, "/users"))
 }

@@ -9,9 +9,6 @@
     export let onChange;
     export let value;
 
-    // unused value for now
-    console.log(value);
-
     let fileInput;
     let file = null;
 

@@ -22,6 +22,15 @@ func (this *Repository) CreateUser(model *model.User) error {
 }
 
 //
+func (this *Repository) GetUsers() (*[]model.User, error) {
+	var m []model.User
+	if err := this.Conn.Find(&m).Error; err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
+//
 func (this *Repository) GetUserByID(id uint) (*model.User, error) {
 	var m model.User
 	if err := this.Conn.First(&m, id).Error; err != nil {

@@ -44,3 +44,17 @@ func (this *Handler) Logout(c echo.Context) error {
 	return c.Render(200, "Auth/Login", map[string]interface{}{})
 	// return this.Inertia.Render("Auth/Login", map[string]interface{}{}).ToResponse(c)
 }
+
+//
+func (this *Handler) Register(c echo.Context) error {
+	user := model.User{}
+	if err := this.bindAndValidateRequest(c, &user); err != nil {
+		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
+	}
+	if err := this.service.Register(&user); err != nil {
+		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
+	}
+	return c.JSON(http.StatusCreated, user)
+}

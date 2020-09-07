@@ -9,7 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
-	"reflect"
 )
 
 //
@@ -48,17 +47,9 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 				}
 			}
 
-			fmt.Println(c.Request().Header)
-
 			// Fire the Echo JWT first
 			jwtFunc := jwtMiddleware(next)
 			if err := jwtFunc(c); err != nil {
-				fmt.Println("Auth error", err)
-				fmt.Println(reflect.TypeOf(err))
-				fmt.Println(err.(*echo.HTTPError).Internal)
-				fmt.Println(err.(*echo.HTTPError).Code)
-				fmt.Println(err.(*echo.HTTPError).Message)
-				fmt.Println(err.(*echo.HTTPError).Unwrap())
 				// c.Error(err)
 
 				// Redirect to login in case something wrong happened while checking the url
@@ -74,7 +65,7 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 			}
 
 			return nil
-			return next(c)
+			// return next(c)
 		}
 	}
 }

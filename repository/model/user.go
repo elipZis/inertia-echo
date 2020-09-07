@@ -15,12 +15,21 @@ type UserModel interface {
 
 //
 type User struct {
-	Id       uint    `gorm:"primary_key" json:"-"`
+	Id       uint    `gorm:"primary_key"`
 	Email    string  `gorm:"unique_index;not null" validate:"required,email"`
 	Password string  `gorm:"not null" validate:"required,min=6"`
 	Token    *string `gorm:"null"`
 
-	*trait.Timestampable
+	FirstName string `gorm:"null"`
+	LastName  string `gorm:"null"`
+
+	trait.Timestampable
+	trait.Softdeleteable
+}
+
+//
+func (this *User) Name() string {
+	return this.FirstName + " " + this.LastName
 }
 
 //

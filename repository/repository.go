@@ -26,7 +26,7 @@ func (this *Repository) StoreModel(model interface{}) error {
 
 // Create the model and return a resulting error, if any
 func (this *Repository) CreateModel(model interface{}) error {
-	return this.Conn.Create(&model).Error
+	return this.Conn.Create(model).Error
 }
 
 // Update the model and return a resulting error, if any

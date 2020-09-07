@@ -6,6 +6,7 @@ import (
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 )
@@ -15,9 +16,7 @@ type Handler struct {
 	echo       *echo.Echo
 	service    *service.Service
 	repository *repository.Repository
-
-	// templates *template.Template
-	Inertia *inertia.Inertia
+	Inertia    *inertia.Inertia
 }
 
 //
@@ -26,22 +25,21 @@ func NewHandler(echo *echo.Echo) (this *Handler) {
 	this.echo = echo
 	this.repository = repository.NewRepository(repository.DB.Conn)
 	this.service = service.NewService(this.repository)
-
 	this.Inertia = inertia.NewInertia(echo)
-	// this.Inertia.SetMixVersion()
 	return this
 }
 
 //
 func (this *Handler) Render(c echo.Context, code int, name string, data map[string]interface{}) error {
 	if user, err := this.getUserFromContext(c); err == nil {
+		fmt.Println("--->", user)
 		data["user"] = user
 	}
 	return c.Render(code, name, data)
 }
 
 //
-func (this *Handler) getAnyParamOrDefault(c echo.Context, field string, defaultValue ...interface{}) interface{} {
+func (this *Handler) getAnyParamOrDefault(c echo.Context, field string, defaultValue ...string) string {
 	value := c.FormValue(field)
 	if value == "" {
 		value = c.QueryParam(field)
@@ -54,7 +52,6 @@ func (this *Handler) getAnyParamOrDefault(c echo.Context, field string, defaultV
 		if len(defaultValue) > 0 {
 			return defaultValue[0]
 		}
-		return nil
 	}
 	return value
 }
@@ -67,9 +64,11 @@ func (this *Handler) getUserFromContext(c echo.Context) (*model.User, error) {
 	}
 	claims := tokenUser.Claims.(*service.JWTCustomClaims)
 	return &model.User{
-		Id:    claims.Id,
-		Email: claims.Email,
-		Token: &tokenUser.Raw,
+		Id:        claims.Id,
+		Email:     claims.Email,
+		FirstName: claims.FirstName,
+		LastName:  claims.LastName,
+		Token:     &tokenUser.Raw,
 	}, nil
 }
 

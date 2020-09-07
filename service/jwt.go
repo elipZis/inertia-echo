@@ -11,8 +11,10 @@ import (
 
 // custom claims extending default ones
 type JWTCustomClaims struct {
-	Id    uint   `json:"id"`
-	Email string `json:"email"`
+	Id        uint   `json:"id"`
+	Email     string `json:"email"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 
 	jwt.StandardClaims
 }
@@ -34,6 +36,8 @@ func (this *Service) GenerateToken(user *model.User) *string {
 	claims := &JWTCustomClaims{
 		user.Id,
 		user.Email,
+		user.FirstName,
+		user.LastName,
 		jwt.StandardClaims{
 			Issuer:    util.GetEnvOrDefault("NAME", "elipzis.com/inertia-echo"),
 			ExpiresAt: time.Now().Add(JWTLifetime).Unix(),

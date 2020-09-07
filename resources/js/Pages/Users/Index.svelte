@@ -6,9 +6,7 @@
     import SearchFilter from '@/Shared/SearchFilter.svelte';
     import Pagination from '@/Shared/Pagination.svelte';
 
-    const route = window.route;
-
-    $: data = $page.users.data;
+    $: data = $page.users;
     $: links = $page.users.links;
 </script>
 
@@ -19,7 +17,7 @@
         <h1 class="mb-8 font-bold text-3xl">Users</h1>
 
         <div class="mb-6 flex justify-between items-center">
-            <SearchFilter />
+<!--            <SearchFilter />-->
 
             <InertiaLink class="btn-indigo" href={route('users.create')}>
                 <span>Create</span>
@@ -44,22 +42,20 @@
                             </td>
                         </tr>
                     {:else}
-                        {#each data as { id, name, photo, email, owner, deleted_at } (id)}
+                        {#each data as { Id, FirstName, LastName, Email, DeletedAt } (Id)}
                             <tr class="hover:bg-gray-100 focus-within:bg-gray-100">
                                 <td class="border-t">
                                     <InertiaLink
-                                        href={route('users.edit', id)}
+                                        href={route('users.edit', {user: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo-700"
                                     >
-                                    {#if photo}
-                                        <img
-                                            src={photo}
-                                            class="block w-5 h-5 rounded-full mr-2 -my-2"
-                                            alt={name}
-                                        />
-                                    {/if}
-                                    {name}
-                                    {#if deleted_at}
+                                    <img
+                                        src="https://picsum.photos/200/300"
+                                        class="block w-5 h-5 rounded-full mr-2 -my-2"
+                                        alt={FirstName + " " + LastName}
+                                    />
+                                    {FirstName + " " + LastName}
+                                    {#if DeletedAt}
                                         <Icon
                                             name="trash"
                                             className="flex-shrink-0 w-3 h-3 text-gray-400 fill-current ml-2"
@@ -71,27 +67,27 @@
                                 <td class="border-t">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('users.edit', id)}
+                                        href={route('users.edit', {user: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {email}
+                                        {Email}
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('users.edit', id)}
+                                        href={route('users.edit', Id)}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {owner ? 'Owner' : 'User'}
+                                        <!--{owner ? 'Owner' : 'User'}-->
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t w-px">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('users.edit', id)}
+                                        href={route('users.edit', {user: Id})}
                                         class="px-4 flex items-center"
                                     >
                                         <Icon
@@ -107,6 +103,6 @@
             </table>
         </div>
 
-        <Pagination links={links} />
+<!--        <Pagination links={links} />-->
     </div>
 </Layout>

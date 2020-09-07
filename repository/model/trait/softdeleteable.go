@@ -8,7 +8,7 @@ import (
 
 // DO NOT USE!
 type Softdeleteable struct {
-	DeletedAt *time.Time `gorm:"column:created_at;null;" json:"-"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;null;"`
 }
 
 //

@@ -1,15 +1,14 @@
 <script>
     import {InertiaLink} from '@inertiajs/inertia-svelte';
     import Icon from '@/Shared/Icon.svelte';
-    import route from '../../../node_modules/ziggy-js'
+    // import route from '../../../node_modules/ziggy-js'
 
     export let icon;
     export let link;
     export let text;
 
-    // const route = window.route;
+    const route = window.route;
     let isActive = route().current(link + '*');
-    // let isActive = false
 </script>
 
 <div class="mb-4">
