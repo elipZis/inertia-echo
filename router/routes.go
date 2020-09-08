@@ -5,7 +5,6 @@ import (
 	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/router/middleware"
 	"elipzis.com/inertia-echo/util"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,8 +20,8 @@ func (this *Router) Register(rootGroup *echo.Group) {
 
 	// Authentication Routes
 	rootGroup.GET("", func(c echo.Context) error {
-		fmt.Println("HIIIIIERR")
-		return c.Redirect(http.StatusPermanentRedirect, util.GetRedirectUrl(c, "/dashboard"))
+		c.Request().Method = http.MethodGet
+		return c.Redirect(http.StatusMovedPermanently, util.GetRedirectUrl(c, "/dashboard"))
 	})
 	rootGroup.GET("/login", controller.LoginForm).Name = "login"
 	rootGroup.POST("/login", controller.Login).Name = "login.attempt"

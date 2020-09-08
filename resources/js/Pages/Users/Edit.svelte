@@ -12,19 +12,18 @@
     import { toFormData } from '@/utils';
 
     const route = window.route;
-
-    let { user } = $page;
-    $: user = $page.user;
+    let { user, data } = $page;
+    // $: user = data;
     $: errors = $page.errors ?? [];
 
     let sending = false;
     let values = {
-        id: user.Id,
-        first_name: user.FirstName || '',
-        last_name: user.LastName || '',
-        email: user.Email || '',
-        password: user.Password || '',
-        owner: '0',//user.owner ? '1' : '0' || '0'
+        id: data.Id,
+        first_name: data.FirstName || '',
+        last_name: data.LastName || '',
+        email: data.Email || '',
+        password: data.Password || '',
+        owner: '0',//data.owner ? '1' : '0' || '0'
         // photo: '',
     };
 
@@ -72,8 +71,8 @@
                 {values.first_name} {values.last_name}
             </h1>
 
-            {#if user.photo}
-                <img class="block w-8 h-8 rounded-full ml-4" src={user.photo} alt={user.FirstName + " " + user.LastName} />
+            {#if data.photo}
+                <img class="block w-8 h-8 rounded-full ml-4" src={data.photo} alt={data.FirstName + " " + data.LastName} />
             {/if}
         </div>
 
@@ -118,31 +117,31 @@
                         onChange={handleChange}
                     />
 
-                    <SelectInput
-                        className="pr-6 pb-8 w-full lg:w-1/2"
-                        label="Owner"
-                        name="owner"
-                        errors={errors.owner}
-                        value={values.owner}
-                        onChange={handleChange}
-                    >
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
-                    </SelectInput>
+<!--                    <SelectInput-->
+<!--                        className="pr-6 pb-8 w-full lg:w-1/2"-->
+<!--                        label="Owner"-->
+<!--                        name="owner"-->
+<!--                        errors={errors.owner}-->
+<!--                        value={values.owner}-->
+<!--                        onChange={handleChange}-->
+<!--                    >-->
+<!--                        <option value="1">Yes</option>-->
+<!--                        <option value="0">No</option>-->
+<!--                    </SelectInput>-->
 
-                    <FileInput
-                        className="pr-6 pb-8 w-full lg:w-1/2"
-                        label="Photo"
-                        name="photo"
-                        accept="image/*"
-                        errors={errors.photo}
-                        value={values.photo}
-                        onChange={handleFileChange}
-                    />
+<!--                    <FileInput-->
+<!--                        className="pr-6 pb-8 w-full lg:w-1/2"-->
+<!--                        label="Photo"-->
+<!--                        name="photo"-->
+<!--                        accept="image/*"-->
+<!--                        errors={errors.photo}-->
+<!--                        value={values.photo}-->
+<!--                        onChange={handleFileChange}-->
+<!--                    />-->
                 </div>
 
                 <div class="px-8 py-4 bg-gray-100 border-t border-gray-200 flex items-center">
-                    {#if !user.DeletedAt}
+                    {#if !data.DeletedAt}
                         <DeleteButton onDelete={destroy}>Delete User</DeleteButton>
                     {/if}
 

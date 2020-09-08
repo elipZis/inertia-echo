@@ -2,6 +2,7 @@ package model
 
 import (
 	"elipzis.com/inertia-echo/repository/model/trait"
+	"encoding/json"
 	"errors"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
@@ -30,6 +31,14 @@ type User struct {
 //
 func (this *User) Name() string {
 	return this.FirstName + " " + this.LastName
+}
+
+//
+func (this User) MarshalJSON() ([]byte, error) {
+	type user User // prevent recursion
+	x := user(this)
+	x.Password = ""
+	return json.Marshal(x)
 }
 
 //

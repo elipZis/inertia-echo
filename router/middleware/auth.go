@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
+	"strings"
 )
 
 //
@@ -45,7 +46,7 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 				sess, err := session.Get("session", c)
 				if err == nil {
 					if user, ok := sess.Values["user"]; ok {
-						fmt.Println("TOKEN", *user.(*model.User).Token)
+						// fmt.Println("TOKEN", *user.(*model.User).Token)
 						// Set the JWT Token as header to "fool" the JWT Middleware
 						c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", *user.(*model.User).Token))
 					}
@@ -60,7 +61,7 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 
 				switch v := err.(type) {
 				case *echo.HTTPError:
-					if v.Code == http.StatusUnauthorized {
+					if (v.Code == http.StatusUnauthorized || v.Code == http.StatusBadRequest) && strings.Contains(strings.ToLower(v.Message.(string)), "jwt") {
 						// Redirect to login in case something wrong happened while checking the url
 						url := util.GetBaseUrl(c)
 						c.Request().Method = http.MethodGet
@@ -73,11 +74,13 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 						// Otherwise fall back to a constructed
 						return c.Redirect(http.StatusSeeOther, url+"/login")
 					}
+					// default:
+					// 	c.Error(err)
 				}
 			}
 
-			// return nil
-			return next(c)
+			return nil
+			// return next(c)
 		}
 	}
 }

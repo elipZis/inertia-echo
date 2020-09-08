@@ -5,10 +5,11 @@ import (
 	"elipzis.com/inertia-echo/repository"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
+	"elipzis.com/inertia-echo/util"
 	"errors"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 //
@@ -32,10 +33,24 @@ func NewHandler(echo *echo.Echo) (this *Handler) {
 //
 func (this *Handler) Render(c echo.Context, code int, name string, data map[string]interface{}) error {
 	if user, err := this.getUserFromContext(c); err == nil {
-		fmt.Println("--->", user)
 		data["user"] = user
 	}
 	return c.Render(code, name, data)
+}
+
+//
+func (this *Handler) Redirect(c echo.Context, path string, code int, method string) error {
+	if code == 0 {
+		code = http.StatusFound
+	}
+	if method == "" {
+		method = http.MethodGet
+		c.Request().Method = method
+	} else if code >= http.StatusTemporaryRedirect && code <= http.StatusPermanentRedirect {
+		// Change of request method does not work with 307 and 308 by specification (as it seems)
+		code = http.StatusFound
+	}
+	return c.Redirect(code, util.GetRedirectUrl(c, path))
 }
 
 //

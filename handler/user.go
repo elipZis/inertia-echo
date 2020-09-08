@@ -3,7 +3,6 @@ package handler
 import (
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -11,7 +10,6 @@ import (
 
 //
 func (this *Handler) Users(c echo.Context) error {
-	fmt.Println("FICKT EUCH")
 	if users, err := this.repository.GetUsers(); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	} else {
@@ -52,7 +50,7 @@ func (this *Handler) EditUser(c echo.Context) error {
 			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 		} else {
 			return this.Render(c, http.StatusOK, "Users/Edit", map[string]interface{}{
-				"user": user,
+				"data": user,
 			})
 		}
 	}
@@ -79,7 +77,7 @@ func (this *Handler) UpdateUser(c echo.Context) error {
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
-	return c.Redirect(http.StatusOK, "/users")
+	return this.Redirect(c, "/users", http.StatusFound, "GET")
 }
 
 //
@@ -93,8 +91,5 @@ func (this *Handler) StoreUser(c echo.Context) error {
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
-	fmt.Println("STORE REDIRECT")
-	fmt.Println(util.GetRedirectUrl(c, "/users"))
-	c.Request().Method = http.MethodGet
-	return c.Redirect(http.StatusFound, util.GetRedirectUrl(c, "/users"))
+	return this.Redirect(c, "/users", http.StatusFound, "GET")
 }
