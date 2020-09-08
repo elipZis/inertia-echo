@@ -1,8 +1,8 @@
 <script>
     import { InertiaLink, page } from '@inertiajs/inertia-svelte';
     import Icon from '@/Shared/Icon.svelte';
-    import route from '../../../node_modules/ziggy-js'
 
+    const route = window.route;
     let { user } = $page;
     $: user = $page.user;
 

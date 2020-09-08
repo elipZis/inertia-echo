@@ -3,6 +3,8 @@ A demo application to illustrate how [Inertia.js][2] works with [Echo (Go)][3] a
 
 > This is a port of the [Svelte Ping CRM][5] written in Laravel and Svelte (but with reduced functionality).
 
+**This Demo is work in progress and may contain issues, errors and missing functionality!**
+
 ## Pre-requisites
 [Download and install][7] Golang for your platform.
 

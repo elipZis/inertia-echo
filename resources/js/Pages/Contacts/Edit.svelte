@@ -11,23 +11,23 @@
 
     const route = window.route;
 
-    let { contact } = $page;
-    $: contact = $page.contact;
-    $: organizations = $page.organizations;
-    $: errors = $page.errors;
+    let { data, organizations } = $page;
+    $: data = $page.data;
+    $: organizations = $page.organizations ?? [];
+    $: errors = $page.errors ?? [];
 
     let sending = false;
     let values = {
-        first_name: contact.first_name || '',
-        last_name: contact.last_name || '',
-        organization_id: contact.organization_id || '',
-        email: contact.email || '',
-        phone: contact.phone || '',
-        address: contact.address || '',
-        city: contact.city || '',
-        region: contact.region || '',
-        country: contact.country || '',
-        postal_code: contact.postal_code || ''
+        first_name: data.FirstName || '',
+        last_name: data.LastName || '',
+        organization_id: data.OrganizationId || '',
+        email: data.Email || '',
+        phone: data.Phone || '',
+        address: data.Address || '',
+        city: data.City || '',
+        region: data.Region || '',
+        country: data.Country || '',
+        postal_code: data.PostalCode || ''
     };
 
     function handleChange({ target: { name, value } }) {
@@ -39,18 +39,12 @@
 
     function handleSubmit(e) {
         sending = true;
-        Inertia.put(route('contacts.update', contact.id), values).then(() => sending = false);
+        Inertia.put(route('contacts.update', data.Id), values).then(() => sending = false);
     }
 
     function destroy() {
         if (confirm('Are you sure you want to delete this contact?')) {
-            Inertia.delete(route('contacts.destroy', contact.id));
-        }
-    }
-
-    function restore() {
-        if (confirm('Are you sure you want to restore this contact?')) {
-            Inertia.put(route('contacts.restore', contact.id));
+            Inertia.delete(route('contacts.destroy', data.Id));
         }
     }
 </script>
@@ -71,8 +65,8 @@
             {values.first_name} {values.last_name}
         </h1>
 
-        {#if contact.deleted_at}
-            <TrashedMessage onRestore={restore}>This contact has been deleted.</TrashedMessage>
+        {#if data.DeletedAt}
+            <TrashedMessage>This contact has been deleted.</TrashedMessage>
         {/if}
 
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
@@ -187,7 +181,7 @@
                 </div>
 
                 <div class="px-8 py-4 bg-gray-100 border-t border-gray-200 flex items-center">
-                    {#if !contact.deleted_at}
+                    {#if !data.DeletedAt}
                         <DeleteButton onDelete={destroy}>Delete Contact</DeleteButton>
                     {/if}
 

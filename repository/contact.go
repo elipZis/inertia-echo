@@ -17,7 +17,7 @@ func (this *Repository) CreateContact(model *model.Contact) error {
 //
 func (this *Repository) GetContacts() (*[]model.Contact, error) {
 	var m []model.Contact
-	if err := this.Conn.Find(&m).Error; err != nil {
+	if err := this.Conn.Preload("Organization").Find(&m).Error; err != nil {
 		return nil, err
 	}
 	return &m, nil

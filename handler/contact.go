@@ -3,6 +3,7 @@ package handler
 import (
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -24,11 +25,13 @@ func (this *Handler) EditContact(c echo.Context) error {
 	id := this.getAnyParamOrDefault(c, "contact")
 	if id != "" {
 		id, _ := strconv.Atoi(id)
-		if user, err := this.repository.GetContactById(uint(id)); err != nil {
+		if data, err := this.repository.GetContactById(uint(id)); err != nil {
 			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 		} else {
+			organizations, _ := this.repository.GetOrganizations()
 			return this.Render(c, http.StatusOK, "Contacts/Edit", map[string]interface{}{
-				"data": user,
+				"data":          data,
+				"organizations": organizations,
 			})
 		}
 	}
@@ -37,21 +40,24 @@ func (this *Handler) EditContact(c echo.Context) error {
 
 //
 func (this *Handler) CreateContact(c echo.Context) error {
-	return this.Render(c, http.StatusOK, "Contacts/Create", map[string]interface{}{})
+	organizations, _ := this.repository.GetOrganizations()
+	return this.Render(c, http.StatusOK, "Contacts/Create", map[string]interface{}{
+		"organizations": organizations,
+	})
 }
 
 //
 func (this *Handler) UpdateContact(c echo.Context) error {
-	user := model.User{}
-	if err := this.bindRequest(c, &user); err != nil {
+	m := model.Contact{}
+	if err := this.bindRequest(c, &m); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
 	// No id, no update
-	if user.Id <= 0 {
+	if m.Id <= 0 {
 		return util.NewError().JSON(c, http.StatusUnprocessableEntity)
 	}
 	//
-	err := this.repository.UpdateUser(&user)
+	err := this.repository.UpdateContact(&m)
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
@@ -60,12 +66,13 @@ func (this *Handler) UpdateContact(c echo.Context) error {
 
 //
 func (this *Handler) StoreContact(c echo.Context) error {
-	user := model.User{}
-	if err := this.bindRequest(c, &user); err != nil {
+	m := model.Contact{}
+	if err := this.bindRequest(c, &m); err != nil {
+		fmt.Println("Store Contact", err)
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
 	//
-	err := this.repository.CreateUser(&user)
+	err := this.repository.CreateContact(&m)
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
@@ -74,16 +81,16 @@ func (this *Handler) StoreContact(c echo.Context) error {
 
 //
 func (this *Handler) DeleteContact(c echo.Context) error {
-	user := model.User{}
-	if err := this.bindRequest(c, &user); err != nil {
+	m := model.Contact{}
+	if err := this.bindRequest(c, &m); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
 	// No id, no delete
-	if user.Id <= 0 {
+	if m.Id <= 0 {
 		return util.NewError().JSON(c, http.StatusUnprocessableEntity)
 	}
 	//
-	err := this.repository.DeleteModel(&user)
+	err := this.repository.DeleteModel(&m)
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}

@@ -23,8 +23,8 @@
         last_name: data.LastName || '',
         email: data.Email || '',
         password: data.Password || '',
-        owner: '0',//data.owner ? '1' : '0' || '0'
-        // photo: '',
+        owner: data.Owner ? '1' : '0' || '0',
+        photo: '',
     };
 
     function handleChange({ target: { name, value } }) {
@@ -49,7 +49,7 @@
 
     function destroy() {
         if (confirm('Are you sure you want to delete this user?')) {
-            Inertia.delete(route('users.destroy', { user: user.Id }));
+            Inertia.delete(route('users.destroy', { user: data.Id }));
         }
     }
 </script>
@@ -71,10 +71,14 @@
                 {values.first_name} {values.last_name}
             </h1>
 
-            {#if data.photo}
-                <img class="block w-8 h-8 rounded-full ml-4" src={data.photo} alt={data.FirstName + " " + data.LastName} />
+            {#if data.PhotoPath}
+                <img class="block w-8 h-8 rounded-full ml-4" src={data.PhotoPath} alt={data.FirstName + " " + data.LastName} />
             {/if}
         </div>
+
+        {#if data.DeletedAt}
+            <TrashedMessage>This user has been deleted.</TrashedMessage>
+        {/if}
 
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
@@ -117,17 +121,17 @@
                         onChange={handleChange}
                     />
 
-<!--                    <SelectInput-->
-<!--                        className="pr-6 pb-8 w-full lg:w-1/2"-->
-<!--                        label="Owner"-->
-<!--                        name="owner"-->
-<!--                        errors={errors.owner}-->
-<!--                        value={values.owner}-->
-<!--                        onChange={handleChange}-->
-<!--                    >-->
-<!--                        <option value="1">Yes</option>-->
-<!--                        <option value="0">No</option>-->
-<!--                    </SelectInput>-->
+                    <SelectInput
+                        className="pr-6 pb-8 w-full lg:w-1/2"
+                        label="Owner"
+                        name="Owner"
+                        errors={errors.owner}
+                        value={values.Owner}
+                        onChange={handleChange}
+                    >
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </SelectInput>
 
 <!--                    <FileInput-->
 <!--                        className="pr-6 pb-8 w-full lg:w-1/2"-->

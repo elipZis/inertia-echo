@@ -12,20 +12,20 @@
 
     const route = window.route;
 
-    let { organization } = $page;
-    $: errors = $page.errors;
-    $: organization = $page.organization;
+    let { data } = $page;
+    $: errors = $page.errors ?? [];
+    $: data = $page.data;
 
     let sending = false;
     let values = {
-        name: organization.name || '',
-        email: organization.email || '',
-        phone: organization.phone || '',
-        address: organization.address || '',
-        city: organization.city || '',
-        region: organization.region || '',
-        country: organization.country || '',
-        postal_code: organization.postal_code || ''
+        name: data.Name || '',
+        email: data.Email || '',
+        phone: data.Phone || '',
+        address: data.Address || '',
+        city: data.City || '',
+        region: data.Region || '',
+        country: data.Country || '',
+        postal_code: data.PostalCode || ''
     };
 
     function handleChange({ target: { name, value } }) {
@@ -37,18 +37,12 @@
 
     function handleSubmit() {
         sending = true;
-        Inertia.put(route('organizations.update', organization.id), values).then(() => sending = false);
+        Inertia.put(route('organizations.update', data.Id), values).then(() => sending = false);
     }
 
     function destroy() {
         if (confirm('Are you sure you want to delete this organization?')) {
-            Inertia.delete(route('organizations.destroy', organization.id));
-        }
-    }
-
-    function restore() {
-        if (confirm('Are you sure you want to restore this organization?')) {
-            Inertia.put(route('organizations.restore', organization.id));
+            Inertia.delete(route('organizations.destroy', data.Id));
         }
     }
 </script>
@@ -69,8 +63,8 @@
             {values.name}
         </h1>
 
-        {#if organization.deleted_at}
-            <TrashedMessage onRestore={restore}>This organization has been deleted.</TrashedMessage>
+        {#if data.DeletedAt}
+            <TrashedMessage>This organization has been deleted.</TrashedMessage>
         {/if}
 
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
@@ -160,7 +154,7 @@
                 </div>
 
                 <div class="px-8 py-4 bg-gray-100 border-t border-gray-200 flex items-center">
-                    {#if !organization.deleted_at}
+                    {#if !data.DeletedAt}
                         <DeleteButton onDelete={destroy}>Delete Organization</DeleteButton>
                     {/if}
 
@@ -187,23 +181,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#if !organization.contacts || organization.contacts.length === 0}
+                    {#if !data.Contacts || data.Contacts.length === 0}
                         <tr>
                             <td class="border-t px-6 py-4" colspan="4">
                                 No contacts found.
                             </td>
                         </tr>
                     {:else}
-                        {#each organization.contacts as { id, name, phone, city, deleted_at } (id)}
+                        {#each data.Contacts as { Id, Name, Phone, City, DeletedAt } (Id)}
                             <tr class="hover:bg-gray-100 focus-within:bg-gray-100">
                                 <td class="border-t">
                                     <InertiaLink
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {name}
+                                        {Name}
 
-                                        {#if deleted_at}
+                                        {#if DeletedAt}
                                             <Icon
                                                 name="trash"
                                                 className="flex-shrink-0 w-3 h-3 text-gray-400 fill-current ml-2"
@@ -215,27 +209,27 @@
                                 <td class="border-t">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {city}
+                                        {City}
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {phone}
+                                        {Phone}
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t w-px">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-4 flex items-center"
                                     >
                                         <Icon

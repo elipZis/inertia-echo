@@ -18,8 +18,8 @@ type Contact struct {
 	Country    string `gorm:"null" validate:"alpha;len=2"`
 	PostalCode string `gorm:"null"`
 
-	OrganizationId int
-	Organization   Organization `gorm:"foreignKey:OrganizationId;references:Id"`
+	OrganizationId *uint        `json:",string"`
+	Organization   Organization `gorm:"foreignKey:OrganizationId;references:Id" validate:"-"`
 
 	trait.Timestampable
 }

@@ -40,8 +40,6 @@
     function handleSubmit() {
         sending = true;
         const formData = toFormData(values);
-        console.log(values);
-        console.log(formData);
         Inertia.post(route('users.store'), formData).then(() =>  sending = false);
     }
 </script>
@@ -86,7 +84,7 @@
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
-                        label="Email"
+                        label="Email*"
                         name="Email"
                         type="email"
                         errors={errors.email}
@@ -96,7 +94,7 @@
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
-                        label="Password"
+                        label="Password*"
                         name="Password"
                         type="password"
                         errors={errors.password}

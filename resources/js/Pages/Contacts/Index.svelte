@@ -10,6 +10,8 @@
 
     $: data = $page.contacts;
     $: links = $page.contacts.links;
+
+    console.log($page.contacts);
 </script>
 
 <Helmet title="Contacts" />
@@ -45,16 +47,16 @@
                             </td>
                         </tr>
                     {:else}
-                        {#each data as { id, name, city, phone, organization, deleted_at } (id)}
+                        {#each data as { Id, FirstName, LastName, City, Phone, Organization, DeletedAt } (Id)}
                             <tr class="hover:bg-gray-100 focus-within:bg-gray-100">
                                 <td class="border-t">
                                     <InertiaLink
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo-700"
                                     >
-                                        {name}
+                                        {FirstName + " " + LastName}
 
-                                        {#if deleted_at}
+                                        {#if DeletedAt}
                                             <Icon
                                                 name="trash"
                                                 class="flex-shrink-0 w-3 h-3 text-gray-400 fill-current ml-2"
@@ -67,36 +69,36 @@
                                     <InertiaLink
                                         tabindex="1"
                                         class="px-6 py-4 flex items-center focus:text-indigo"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                     >
-                                        {organization && organization.name}
+                                        {Organization && Organization.Name}
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {city}
+                                        {City}
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {phone}
+                                        {Phone}
                                     </InertiaLink>
                                 </td>
 
                                 <td class="border-t w-px">
                                     <InertiaLink
                                         tabindex="-1"
-                                        href={route('contacts.edit', id)}
+                                        href={route('contacts.edit', {contact: Id})}
                                         class="px-4 flex items-center"
                                     >
                                         <Icon
@@ -112,6 +114,6 @@
             </table>
         </div>
 
-        <Pagination links={links} />
+<!--        <Pagination links={links} />-->
     </div>
 </Layout>

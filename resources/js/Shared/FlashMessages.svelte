@@ -2,8 +2,8 @@
     import {page} from '@inertiajs/inertia-svelte';
 
     let { flash, errors } = $page;
-    $: flash = $page.flash;
-    $: errors = $page.errors;
+    $: flash = $page.flash ?? [];
+    $: errors = $page.errors ?? [];
 
     let numOfErrors = Object.keys(errors).length;
 

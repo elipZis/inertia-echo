@@ -81,7 +81,7 @@
                                         href={route('users.edit', Id)}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {DeletedAt}
+                                        {DeletedAt ?? '-'}
                                     </InertiaLink>
                                 </td>
 

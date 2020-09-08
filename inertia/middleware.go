@@ -38,24 +38,6 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 
 			// Run Inertia post
 			if err := next(c); err != nil {
-				// code := http.StatusInternalServerError
-				// message := err.Error()
-				// if he, ok := err.(*echo.HTTPError); ok {
-				// 	code = he.Code
-				// 	message = he.Message.(string)
-				// }
-				// errorMsg := map[string]interface{}{
-				// 	strconv.Itoa(code): message,
-				// }
-				//
-				// // Add general errors in case some pop up
-				// errors, ok := config.Inertia.GetShared("errors")
-				// if !ok {
-				// 	config.Inertia.Share("errors", errorMsg)
-				// } else {
-				// 	config.Inertia.Share("errors", util.MergeMaps(errors.(map[string]interface{}), errorMsg))
-				// }
-
 				c.Error(err)
 			}
 

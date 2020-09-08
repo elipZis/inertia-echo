@@ -9,18 +9,18 @@
 
     const route = window.route;
 
-    $: errors = $page.errors;
+    $: errors = $page.errors ?? [];
 
     let sending = false;
     let values = {
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        region: '',
-        country: '',
-        postal_code: ''
+        Name: '',
+        Email: '',
+        Phone: '',
+        Address: '',
+        City: '',
+        Region: '',
+        Country: '',
+        PostalCode: ''
     };
 
     function handleChange({ target: { name, value } }) {
@@ -56,69 +56,69 @@
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
-                        label="Name"
-                        name="name"
+                        label="Name*"
+                        name="Name"
                         errors={errors.name}
-                        value={values.name}
+                        value={values.Name}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Email"
-                        name="email"
+                        name="Email"
                         type="email"
                         errors={errors.email}
-                        value={values.email}
+                        value={values.Email}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Phone"
-                        name="phone"
+                        name="Phone"
                         type="text"
                         errors={errors.phone}
-                        value={values.phone}
+                        value={values.Phone}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Address"
-                        name="address"
+                        name="Address"
                         type="text"
                         errors={errors.address}
-                        value={values.address}
+                        value={values.Address}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="City"
-                        name="city"
+                        name="City"
                         type="text"
                         errors={errors.city}
-                        value={values.city}
+                        value={values.City}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Province/State"
-                        name="region"
+                        name="Region"
                         type="text"
                         errors={errors.region}
-                        value={values.region}
+                        value={values.Region}
                         onChange={handleChange}
                     />
 
                     <SelectInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
-                        name="country"
+                        name="Country"
                         errors={errors.country}
-                        value={values.country}
+                        value={values.Country}
                         onChange={handleChange}
                     >
                         <option value=""></option>
@@ -129,10 +129,10 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Postal Code"
-                        name="postal_code"
+                        name="PostalCode"
                         type="text"
                         errors={errors.postal_code}
-                        value={values.postal_code}
+                        value={values.PostalCode}
                         onChange={handleChange}
                     />
                 </div>
