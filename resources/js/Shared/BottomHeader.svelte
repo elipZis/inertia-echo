@@ -17,8 +17,7 @@
             on:click={() => menuOpened = true}
         >
             <div class="text-gray-800 group-hover:text-indigo-600 focus:text-indigo-600 mr-1 whitespace-no-wrap">
-                <span>{user.FirstName}</span>
-                <span class="ml-1 hidden md:inline">{user.LastName}</span>
+                <span>{user.FirstName}</span><span class="ml-1 hidden md:inline">{user.LastName}</span>
             </div>
 
             <Icon
