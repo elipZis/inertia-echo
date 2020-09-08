@@ -4,13 +4,17 @@ import route from '../../node_modules/ziggy-js'
 
 // Import Ziggy globally
 window.route = route;
-// axios.interceptors.request.use(
-//     config => {
-//         config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('inertiaToken');
-//         return config;
-//     },
-//     error => Promise.reject(error),
-// );
+// Check for a locally stored token to add as bearer
+axios.interceptors.request.use(
+    config => {
+        const token = localStorage.getItem('inertiaToken');
+        if(token && token !== "") {
+            config.headers['Authorization'] = 'Bearer ' + token;
+        }
+        return config;
+    },
+    error => Promise.reject(error),
+);
 // Add a 401 response interceptor
 axios.interceptors.response.use(function (response) {
     return response;

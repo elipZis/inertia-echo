@@ -6,6 +6,7 @@
     import SearchFilter from '@/Shared/SearchFilter.svelte';
     import Pagination from '@/Shared/Pagination.svelte';
 
+    const route = window.route;
     $: data = $page.users;
     $: links = $page.users.links;
 </script>

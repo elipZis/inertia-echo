@@ -38,6 +38,9 @@ func NewRouter() (this *Router) {
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
 	this.Echo.Use(session.Middleware(sessions.NewCookieStore([]byte(util.GetEnvOrDefault("SESSION_SECRET", "supersecretsessionsecret")))))
+	this.Echo.Pre(middleware.MethodOverrideWithConfig(middleware.MethodOverrideConfig{
+		Getter: middleware.MethodFromForm("_method"),
+	}))
 	this.Echo.Static("/", util.GetEnvOrDefault("INERTIA_PUBLIC_PATH", "public"))
 
 	// go-playground/validation

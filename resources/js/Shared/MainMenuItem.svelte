@@ -1,7 +1,6 @@
 <script>
     import {InertiaLink} from '@inertiajs/inertia-svelte';
     import Icon from '@/Shared/Icon.svelte';
-    // import route from '../../../node_modules/ziggy-js'
 
     export let icon;
     export let link;

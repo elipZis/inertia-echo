@@ -38,12 +38,17 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 				return next(c)
 			}
 
-			sess, err := session.Get("session", c)
-			if err == nil {
-				if user, ok := sess.Values["user"]; ok {
-					fmt.Println("TOKEN", *user.(*model.User).Token)
-					// Set the JWT Token as header to "fool" the JWT Middleware
-					c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", *user.(*model.User).Token))
+			// Check for an authorization header
+			authorization := c.Request().Header.Get("Authorization")
+			if authorization == "" {
+				// Fall back to session based JWT token, if non is given
+				sess, err := session.Get("session", c)
+				if err == nil {
+					if user, ok := sess.Values["user"]; ok {
+						fmt.Println("TOKEN", *user.(*model.User).Token)
+						// Set the JWT Token as header to "fool" the JWT Middleware
+						c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", *user.(*model.User).Token))
+					}
 				}
 			}
 
@@ -51,21 +56,28 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 			jwtFunc := jwtMiddleware(next)
 			if err := jwtFunc(c); err != nil {
 				// c.Error(err)
+				fmt.Println(err)
 
-				// Redirect to login in case something wrong happened while checking the url
-				url := util.GetBaseUrl(c)
-				// Try to find a route named "login"
-				for _, route := range c.Echo().Routes() {
-					if route.Name == "login" {
-						return c.Redirect(http.StatusTemporaryRedirect, url+route.Path)
+				switch v := err.(type) {
+				case *echo.HTTPError:
+					if v.Code == http.StatusUnauthorized {
+						// Redirect to login in case something wrong happened while checking the url
+						url := util.GetBaseUrl(c)
+						c.Request().Method = http.MethodGet
+						// Try to find a route named "login"
+						for _, route := range c.Echo().Routes() {
+							if route.Name == "login" {
+								return c.Redirect(http.StatusSeeOther, url+route.Path)
+							}
+						}
+						// Otherwise fall back to a constructed
+						return c.Redirect(http.StatusSeeOther, url+"/login")
 					}
 				}
-				// Otherwise fall back to a constructed
-				return c.Redirect(http.StatusTemporaryRedirect, url+"/login")
 			}
 
-			return nil
-			// return next(c)
+			// return nil
+			return next(c)
 		}
 	}
 }

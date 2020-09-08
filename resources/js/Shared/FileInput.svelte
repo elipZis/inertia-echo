@@ -7,7 +7,7 @@
     export let accept;
     export let errors = [];
     export let onChange;
-    export let value;
+    // export let value;
 
     let fileInput;
     let file = null;

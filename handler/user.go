@@ -11,6 +11,7 @@ import (
 
 //
 func (this *Handler) Users(c echo.Context) error {
+	fmt.Println("FICKT EUCH")
 	if users, err := this.repository.GetUsers(); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	} else {
@@ -94,5 +95,6 @@ func (this *Handler) StoreUser(c echo.Context) error {
 	}
 	fmt.Println("STORE REDIRECT")
 	fmt.Println(util.GetRedirectUrl(c, "/users"))
+	c.Request().Method = http.MethodGet
 	return c.Redirect(http.StatusFound, util.GetRedirectUrl(c, "/users"))
 }
