@@ -62,5 +62,15 @@ func (this *Router) Register(rootGroup *echo.Group) {
 	contactsGroup.POST("/update", controller.UpdateContact).Name = "contacts.update"
 	contactsGroup.DELETE("/delete", controller.DeleteContact).Name = "contacts.destroy"
 
+	// Reports
+	reportsGroup := rootGroup.Group("/reports")
+	reportsGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	reportsGroup.GET("", controller.Reports).Name = "reports"
+
+	// 500 error
+	rootGroup.GET("/500", func(c echo.Context) error {
+		return c.HTML(http.StatusInternalServerError, "500er Error")
+	}).Name = "500"
+
 	// Do stuff!
 }
