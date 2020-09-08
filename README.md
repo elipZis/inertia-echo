@@ -40,6 +40,8 @@ go build -o inertia-echo-demo elipzis.com/inertia-echo
 ./inertia-echo-demo
 ```
 
+**After your first server start all tables will be created. Use the provided `repository/seed.sql` and seed the database with these.** 
+
 ## License and Credits
 This demo is released under the MIT license by [elipZis][1].
 
