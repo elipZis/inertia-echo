@@ -26,6 +26,13 @@
             >
                 Svelte
             </a>
+            and
+            <a
+                class="text-indigo-600 underline hover:text-orange-500 ml-1"
+                href="https://echo.labstack.com/"
+            >
+                Echo (Go)
+            </a>
             .
         </p>
 

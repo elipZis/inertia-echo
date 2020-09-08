@@ -29,7 +29,7 @@
         <button
                 type="submit"
                 onclick="window.history.go(-1); return false;"
-                class="focus:outline-none flex items-center btn-indigo"
+                class="focus:outline-none flex items-center btn-indigo mt-2"
         >
             Back
         </button>

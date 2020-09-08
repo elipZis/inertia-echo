@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 //
@@ -33,7 +34,7 @@ func (this *Handler) GetUser(c echo.Context) error {
 		id = userId
 	}
 	// Get user and return
-	user, err := this.repository.GetUserByID(id)
+	user, err := this.repository.GetUserById(id)
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 		// return this.createErrorResponse(c, err, http.StatusUnprocessableEntity)
@@ -43,10 +44,10 @@ func (this *Handler) GetUser(c echo.Context) error {
 
 //
 func (this *Handler) EditUser(c echo.Context) error {
-	userId := this.getAnyParamOrDefault(c, "user")
-	if userId != "" {
-		id, _ := strconv.Atoi(userId)
-		if user, err := this.repository.GetUserByID(uint(id)); err != nil {
+	id := this.getAnyParamOrDefault(c, "user")
+	if id != "" {
+		id, _ := strconv.Atoi(id)
+		if user, err := this.repository.GetUserById(uint(id)); err != nil {
 			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 		} else {
 			return this.Render(c, http.StatusOK, "Users/Edit", map[string]interface{}{
@@ -88,6 +89,26 @@ func (this *Handler) StoreUser(c echo.Context) error {
 	}
 	//
 	err := this.repository.CreateUser(&user)
+	if err != nil {
+		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+	}
+	return this.Redirect(c, "/users", http.StatusFound, "GET")
+}
+
+//
+func (this *Handler) DeleteUser(c echo.Context) error {
+	user := model.User{}
+	if err := this.bindRequest(c, &user); err != nil {
+		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+	}
+	// No id, no delete
+	if user.Id <= 0 {
+		return util.NewError().JSON(c, http.StatusUnprocessableEntity)
+	}
+	//
+	t := time.Now()
+	user.DeletedAt = &t
+	err := this.repository.UpdateUser(&user)
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}

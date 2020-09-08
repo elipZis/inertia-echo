@@ -32,7 +32,7 @@
                     <tr class="text-left font-bold">
                         <th class="px-6 pt-5 pb-4">Name</th>
                         <th class="px-6 pt-5 pb-4">Email</th>
-<!--                        <th class="px-6 pt-5 pb-4" colspan="2">Role</th>-->
+                        <th class="px-6 pt-5 pb-4" colspan="2">Deleted At</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,15 +75,15 @@
                                     </InertiaLink>
                                 </td>
 
-<!--                                <td class="border-t">-->
-<!--                                    <InertiaLink-->
-<!--                                        tabindex="-1"-->
-<!--                                        href={route('users.edit', Id)}-->
-<!--                                        class="px-6 py-4 flex items-center focus:text-indigo"-->
-<!--                                    >-->
-<!--                                        {owner ? 'Owner' : 'User'}-->
-<!--                                    </InertiaLink>-->
-<!--                                </td>-->
+                                <td class="border-t">
+                                    <InertiaLink
+                                        tabindex="-1"
+                                        href={route('users.edit', Id)}
+                                        class="px-6 py-4 flex items-center focus:text-indigo"
+                                    >
+                                        {DeletedAt}
+                                    </InertiaLink>
+                                </td>
 
                                 <td class="border-t w-px">
                                     <InertiaLink

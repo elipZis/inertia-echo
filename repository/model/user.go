@@ -16,13 +16,16 @@ type UserModel interface {
 
 //
 type User struct {
-	Id       uint    `gorm:"primary_key"`
-	Email    string  `gorm:"unique_index;not null" validate:"required,email"`
-	Password string  `gorm:"not null" validate:"required,min=6"`
-	Token    *string `gorm:"null"`
+	Id       uint   `gorm:"primary_key"`
+	Email    string `gorm:"unique_index;not null" validate:"required,email"`
+	Password string `gorm:"not null" validate:"required,min=6"`
+	Token    string `gorm:"null"`
 
 	FirstName string `gorm:"null"`
 	LastName  string `gorm:"null"`
+
+	Owner     bool   `gorm:"null;default:false"`
+	PhotoPath string `gorm:"null"`
 
 	trait.Timestampable
 	trait.Softdeleteable

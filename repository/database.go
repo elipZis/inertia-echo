@@ -34,10 +34,8 @@ func NewDatabase() (this *Database) {
 	debug, _ := strconv.ParseBool(os.Getenv("DEBUG"))
 	this.Conn.LogMode(debug)
 
-	//
-	if err == nil {
-		this.AutoMigrate()
-	}
+	// Migrate (if anything)
+	this.AutoMigrate()
 
 	return this
 }
@@ -45,6 +43,8 @@ func NewDatabase() (this *Database) {
 //
 func (this *Database) AutoMigrate() {
 	this.Conn.AutoMigrate(
+		&model.Contact{},
+		&model.Organization{},
 		&model.User{},
 	)
 }

@@ -31,7 +31,7 @@ func (this *Repository) GetUsers() (*[]model.User, error) {
 }
 
 //
-func (this *Repository) GetUserByID(id uint) (*model.User, error) {
+func (this *Repository) GetUserById(id uint) (*model.User, error) {
 	var m model.User
 	if err := this.Conn.First(&m, id).Error; err != nil {
 		return nil, err

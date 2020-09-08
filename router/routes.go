@@ -30,12 +30,17 @@ func (this *Router) Register(rootGroup *echo.Group) {
 	// Dashboard
 	dashboardGroup := rootGroup.Group("/dashboard")
 	dashboardGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
-	dashboardGroup.GET("", controller.DashboardIndex).Name = "dashboard"
+	dashboardGroup.GET("", controller.Dashboard).Name = "dashboard"
 
 	// Organizations
 	organizationsGroup := rootGroup.Group("/organizations")
 	organizationsGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
-	organizationsGroup.GET("", controller.OrganizationsIndex).Name = "organizations"
+	organizationsGroup.GET("", controller.Organizations).Name = "organizations"
+	organizationsGroup.GET("/create", controller.CreateOrganization).Name = "organizations.create"
+	organizationsGroup.POST("/store", controller.StoreOrganization).Name = "organizations.store"
+	organizationsGroup.GET("/edit", controller.EditOrganization).Name = "organizations.edit"
+	organizationsGroup.POST("/update", controller.UpdateOrganization).Name = "organizations.update"
+	organizationsGroup.DELETE("/delete", controller.DeleteOrganization).Name = "organizations.destroy"
 
 	// User handling
 	usersGroup := rootGroup.Group("/users")
@@ -45,6 +50,17 @@ func (this *Router) Register(rootGroup *echo.Group) {
 	usersGroup.GET("/create", controller.CreateUser).Name = "users.create"
 	usersGroup.POST("/update", controller.UpdateUser).Name = "users.update"
 	usersGroup.POST("/store", controller.StoreUser).Name = "users.store"
+	usersGroup.DELETE("/delete", controller.DeleteUser).Name = "users.delete"
+
+	// Contacts
+	contactsGroup := rootGroup.Group("/contacts")
+	contactsGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	contactsGroup.GET("", controller.Contacts).Name = "contacts"
+	contactsGroup.GET("/create", controller.CreateContact).Name = "contacts.create"
+	contactsGroup.POST("/store", controller.StoreContact).Name = "contacts.store"
+	contactsGroup.GET("/edit", controller.EditContact).Name = "contacts.edit"
+	contactsGroup.POST("/update", controller.UpdateContact).Name = "contacts.update"
+	contactsGroup.DELETE("/delete", controller.DeleteContact).Name = "contacts.destroy"
 
 	// Do stuff!
 }

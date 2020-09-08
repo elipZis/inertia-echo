@@ -48,7 +48,7 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 					if user, ok := sess.Values["user"]; ok {
 						// fmt.Println("TOKEN", *user.(*model.User).Token)
 						// Set the JWT Token as header to "fool" the JWT Middleware
-						c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", *user.(*model.User).Token))
+						c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.(*model.User).Token))
 					}
 				}
 			}

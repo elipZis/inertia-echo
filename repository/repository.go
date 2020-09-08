@@ -38,3 +38,8 @@ func (this *Repository) UpdateModel(model interface{}) error {
 func (this *Repository) SaveModel(model interface{}) error {
 	return this.Conn.Save(model).Error
 }
+
+//
+func (this *Repository) DeleteModel(model interface{}) error {
+	return this.Conn.Delete(model).Error
+}

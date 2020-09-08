@@ -83,7 +83,7 @@ func (this *Handler) getUserFromContext(c echo.Context) (*model.User, error) {
 		Email:     claims.Email,
 		FirstName: claims.FirstName,
 		LastName:  claims.LastName,
-		Token:     &tokenUser.Raw,
+		Token:     tokenUser.Raw,
 	}, nil
 }
 
