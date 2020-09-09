@@ -15,7 +15,7 @@ type Contact struct {
 	Address    string `gorm:"null"`
 	City       string `gorm:"null"`
 	Region     string `gorm:"null"`
-	Country    string `gorm:"null" validate:"alpha;len=2"`
+	Country    string `gorm:"null" validate:"alpha,len=2"`
 	PostalCode string `gorm:"null"`
 
 	OrganizationId *uint        `json:",string"`

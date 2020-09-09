@@ -10,8 +10,6 @@
 
     $: data = $page.contacts;
     $: links = $page.contacts.links;
-
-    console.log($page.contacts);
 </script>
 
 <Helmet title="Contacts" />

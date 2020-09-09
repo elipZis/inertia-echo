@@ -48,7 +48,7 @@ func (this *Handler) CreateContact(c echo.Context) error {
 //
 func (this *Handler) UpdateContact(c echo.Context) error {
 	m := model.Contact{}
-	if err := this.bindRequest(c, &m); err != nil {
+	if err := this.bindAndValidateRequest(c, &m); err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
 	// No id, no update
