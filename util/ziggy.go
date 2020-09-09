@@ -28,6 +28,9 @@ func NewZiggy(echo *echo.Echo, page map[string]interface{}) Ziggy {
 	var this Ziggy
 
 	this.BaseProtocol = "http"
+	if scheme, ok := page["scheme"]; ok {
+		this.BaseProtocol = scheme.(string)
+	}
 	var s []string
 	if host, ok := page["host"]; ok {
 		s = strings.Split(host.(string), ":")

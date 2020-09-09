@@ -101,6 +101,7 @@ func (this Response) ToResponse(c echo.Context) error {
 		// Inertia-Echo-specifics
 		"host":   req.Host,
 		"path":   req.URL.Path,
+		"scheme": req.URL.Scheme,
 		"method": req.Method,
 		"status": this.status,
 	}
