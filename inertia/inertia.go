@@ -123,6 +123,7 @@ func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.C
 			viewContext["shared"] = this.sharedProps
 		}
 		log.Printf("[Inertia] Returning template %s", name)
+		log.Printf("[Inertia] Template Lookup %s", this.templates.Lookup(name))
 		return this.templates.ExecuteTemplate(w, name, data)
 	}
 
