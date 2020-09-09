@@ -8,8 +8,15 @@ import (
 )
 
 //
+func (this *Handler) Test(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"test": "ok",
+	})
+}
+
+//
 func (this *Handler) LoginForm(c echo.Context) error {
-	return c.Render(200, "Auth/Login", map[string]interface{}{})
+	return c.Render(http.StatusOK, "Auth/Login", map[string]interface{}{})
 }
 
 //

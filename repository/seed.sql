@@ -8,4 +8,4 @@ INSERT INTO organizations("name", "email", "phone", "address", "city", "region",
 
 /* Seed some contacts */
 INSERT INTO contacts("first_name", "last_name", "email", "phone", "address", "city", "region", "country", "postal_code") VALUES
-('Johanna', 'Dow', 'johannadoe@example.com', '555-7421-555', 'Somewhere 11', 'Rainbow', 'Over', 'US', '555555');
+('Johanna', 'Doe', 'johannadoe@example.com', '555-7421-555', 'Somewhere 11', 'Rainbow', 'Over', 'US', '555555');
