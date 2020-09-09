@@ -103,8 +103,6 @@
                         {#each organizations as { Id, Name } (Id)}
                             <option value={`${Id}`}>{Name}</option>
                         {/each}
-                        <option value="CA">Canada</option>
-                        <option value="US">United States</option>
                     </SelectInput>
 
                     <TextInput
