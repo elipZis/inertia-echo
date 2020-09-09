@@ -105,6 +105,7 @@ func NewInertiaWithConfig(config InertiaConfig) (this *Inertia) {
 	this.sharedProps = make(map[string]interface{})
 	this.config.Echo.Renderer = this
 	this.config.Echo.HTTPErrorHandler = this.config.HTTPErrorHandler
+	log.Printf("[Inertia] Loading templates out of %s", this.config.TemplatesPath)
 	this.templates = template.Must(template.New("").Funcs(this.config.TemplateFuncMap).ParseGlob(this.config.TemplatesPath))
 	// Try to set a version off of the mix-manifest, if any
 	this.SetMixVersion()
@@ -114,9 +115,6 @@ func NewInertiaWithConfig(config InertiaConfig) (this *Inertia) {
 
 // Render renders a template document
 func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	err := this.templates.ExecuteTemplate(w, name, data)
-	log.Print(err)
-	return err
 	isMap := reflect.TypeOf(data).Kind() == reflect.Map
 	if this.templates.Lookup(name) != nil {
 		if isMap {
@@ -124,7 +122,9 @@ func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.C
 			viewContext["reverse"] = c.Echo().Reverse
 			viewContext["shared"] = this.sharedProps
 		}
-		return this.templates.ExecuteTemplate(w, name, data)
+		err := this.templates.ExecuteTemplate(w, name, data)
+		log.Printf("[Inertia] Executing template %s: %s", name, err)
+		return err
 	}
 
 	if isMap {
