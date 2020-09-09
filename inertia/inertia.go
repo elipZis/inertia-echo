@@ -122,10 +122,7 @@ func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.C
 			viewContext["reverse"] = c.Echo().Reverse
 			viewContext["shared"] = this.sharedProps
 		}
-		log.Println(data)
-		err := this.templates.ExecuteTemplate(w, name, data)
-		log.Printf("[Inertia] Executing template %s: %s", name, err)
-		return err
+		return this.templates.ExecuteTemplate(w, name, data)
 	}
 
 	if isMap {
