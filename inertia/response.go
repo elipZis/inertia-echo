@@ -93,7 +93,7 @@ func (this Response) ToResponse(c echo.Context) error {
 		}
 	})
 
-	scheme := "http"
+	scheme := util.GetEnvOrDefault("SCHEME", "http")
 	if req.TLS != nil {
 		scheme = "https"
 	}
