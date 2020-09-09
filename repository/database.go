@@ -34,6 +34,7 @@ func NewDatabase() (this *Database) {
 	if err != nil {
 		log.Fatal("[Database] Error while connecting to the database: ", err)
 	}
+	log.Print("[Database] Connected to the database")
 	this.Conn = conn
 	DB = this
 

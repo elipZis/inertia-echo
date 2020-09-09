@@ -63,7 +63,8 @@ func NewRouter() (this *Router) {
 func (this *Router) Run() {
 	// Start server
 	go func() {
-		if err := this.Echo.Start(fmt.Sprintf("%s:%s", util.GetEnvOrDefault("HOST", "localhost"), util.GetEnvOrDefault("PORT", "1323"))); err != nil {
+		log.Printf("[Router] Trying to start a server at %s:%s", util.GetEnvOrDefault("HOST", ""), util.GetEnvOrDefault("PORT", "1323"))
+		if err := this.Echo.Start(fmt.Sprintf("%s:%s", util.GetEnvOrDefault("HOST", ""), util.GetEnvOrDefault("PORT", "1323"))); err != nil {
 			this.Echo.Logger.Info("Shutting down the server...")
 		}
 	}()
