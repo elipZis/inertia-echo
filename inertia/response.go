@@ -94,7 +94,7 @@ func (this Response) ToResponse(c echo.Context) error {
 	})
 
 	scheme := util.GetEnvOrDefault("SCHEME", "http")
-	if req.TLS != nil {
+	if req.TLS != nil || req.Header.Get("X-Forwarded-Proto") == "https" {
 		scheme = "https"
 	}
 	page := map[string]interface{}{

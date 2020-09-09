@@ -41,9 +41,12 @@ func NewZiggy(echo *echo.Echo, page map[string]interface{}) Ziggy {
 	this.BaseUrl = this.BaseProtocol + "://" + this.BaseDomain
 	if len(s) > 1 {
 		port, _ := strconv.Atoi(s[1])
-		this.BasePort = port
+		if port > 0 {
+			this.BasePort = port
+			this.BaseUrl += ":" + strconv.Itoa(this.BasePort)
+		}
 	}
-	this.BaseUrl = this.BaseUrl + "/"
+	this.BaseUrl += "/"
 
 	this.Routes = make(map[string]ZiggyRoute, len(echo.Routes()))
 	for _, route := range echo.Routes() {
