@@ -10,7 +10,7 @@ A demo application to illustrate how [Inertia.js][2] works with [Echo (Go)][3] a
 
 You need to have a [PostgreSQL][8] Database running.
 
-## Build & Usage
+## Build
 Clone this repository, checkout the `demo` branch and build your own version:
 
 ```sh
@@ -44,6 +44,12 @@ go build -o inertia-echo-demo elipzis.com/inertia-echo
 
 **After your first server start all tables will be created. Use the provided `repository/seed.sql` and seed the database with these.** 
 
+## Usage
+After you started the server open a browser and navigate to your configured `server:port`. 
+If you seeded with the provided SQL-File you may login with
+* johndoe@example.com
+* secret
+
 ## License and Credits
 This demo is released under the MIT license by [elipZis][1].
 
@@ -52,6 +58,10 @@ This program uses multiple other libraries. Credits and thanks to all the develo
 * [Echo][3]
 * [Svelte Ping CRM][5]
 * [Gorm][9]
+* [Gorilla Sessions][10]
+* [JWT-Go][11]
+* [Go-Validator][12]
+* [Go-DotEnv][13]
 
 and many more.
 
@@ -71,3 +81,7 @@ Any damage cannot be related back to the author.
   [7]: https://golang.org/dl/
   [8]: https://www.postgresql.org/download/
   [9]: https://github.com/go-gorm/gorm/
+  [10]: https://github.com/gorilla/sessions
+  [11]: https://github.com/dgrijalva/jwt-go
+  [12]: https://github.com/go-playground/validator
+  [13]: https://github.com/joho/godotenv

@@ -1,3 +1,4 @@
+// +heroku goVersion go1.15
 module elipzis.com/inertia-echo
 
 go 1.15
