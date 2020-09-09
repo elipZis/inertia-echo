@@ -22,8 +22,15 @@ var DB *Database
 // Create an initial connection to the database and cache here
 func NewDatabase() (this *Database) {
 	this = new(Database)
-	conn, err := gorm.Open(os.Getenv("DB_CONNECTION"), fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_DATABASE"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_SSL")))
+
+	var conn *gorm.DB
+	var err error
+	if value, ok := os.LookupEnv("DATABASE_URL"); ok {
+		conn, err = gorm.Open(os.Getenv("DB_CONNECTION"), value)
+	} else {
+		conn, err = gorm.Open(os.Getenv("DB_CONNECTION"), fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+			os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_DATABASE"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_SSL")))
+	}
 	if err != nil {
 		log.Fatal("[Database] Error while connecting to the database: ", err)
 	}
