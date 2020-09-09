@@ -93,6 +93,10 @@ func (this Response) ToResponse(c echo.Context) error {
 		}
 	})
 
+	scheme := "http"
+	if req.TLS != nil {
+		scheme = "https"
+	}
 	page := map[string]interface{}{
 		"component": this.component,
 		"props":     props,
@@ -101,7 +105,7 @@ func (this Response) ToResponse(c echo.Context) error {
 		// Inertia-Echo-specifics
 		"host":   req.Host,
 		"path":   req.URL.Path,
-		"scheme": req.URL.Scheme,
+		"scheme": scheme,
 		"method": req.Method,
 		"status": this.status,
 	}
