@@ -8,13 +8,6 @@ import (
 )
 
 //
-func (this *Handler) Test(c echo.Context) error {
-	return c.Render(http.StatusOK, c.QueryParam("template"), map[string]interface{}{
-		"test": "ok",
-	})
-}
-
-//
 func (this *Handler) LoginForm(c echo.Context) error {
 	return c.Render(http.StatusOK, "Auth/Login", map[string]interface{}{})
 }

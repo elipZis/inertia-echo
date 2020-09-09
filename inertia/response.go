@@ -3,6 +3,7 @@ package inertia
 import (
 	"elipzis.com/inertia-echo/util"
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -105,6 +106,8 @@ func (this Response) ToResponse(c echo.Context) error {
 		"status": this.status,
 	}
 
+	log.Printf("[Response] Page data: %s", page)
+
 	if req.Header.Get(HeaderPrefix) == "true" {
 		c.Response().Header().Set("Vary", "Accept")
 		c.Response().Header().Set("X-Inertia", "true")
@@ -112,6 +115,7 @@ func (this Response) ToResponse(c echo.Context) error {
 	}
 
 	this.viewData["page"] = page
+	log.Printf("[Response] Render %s", this.viewData)
 	return c.Render(this.status, this.rootView, this.viewData)
 }
 

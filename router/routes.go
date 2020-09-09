@@ -29,9 +29,6 @@ func (this *Router) Register(rootGroup *echo.Group) {
 	rootGroup.POST("/login", controller.Login).Name = "login.attempt"
 	rootGroup.POST("/logout", controller.Logout).Name = "logout"
 
-	// DEBUG ROUTE
-	rootGroup.GET("/test", controller.Test).Name = "logout"
-
 	// Dashboard
 	dashboardGroup := rootGroup.Group("/dashboard")
 	dashboardGroup.Use(authMiddleware)
