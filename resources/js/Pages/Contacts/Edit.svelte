@@ -70,6 +70,10 @@
             <TrashedMessage>This contact has been deleted.</TrashedMessage>
         {/if}
 
+        {#if errors && errors["general"] }
+            <div class="form-error">{errors["general"]}</div>
+        {/if}
+
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
@@ -77,7 +81,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name"
                         name="first_name"
-                        errors={errors.first_name}
+                        errors={errors["Contact.FirstName"]}
                         value={values.first_name}
                         onChange={handleChange}
                     />
@@ -86,7 +90,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name"
                         name="last_name"
-                        errors={errors.last_name}
+                        errors={errors["Contact.LastName"]}
                         value={values.last_name}
                         onChange={handleChange}
                     />
@@ -95,7 +99,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Organization"
                         name="organization_id"
-                        errors={errors.organization_id}
+                        errors={errors["Contact.OrganizationId"]}
                         value={values.organization_id}
                         onChange={handleChange}
                     >
@@ -110,7 +114,7 @@
                         label="Email"
                         name="email"
                         type="email"
-                        errors={errors.email}
+                        errors={errors["Contact.Email"]}
                         value={values.email}
                         onChange={handleChange}
                     />
@@ -120,7 +124,7 @@
                         label="Phone"
                         name="phone"
                         type="text"
-                        errors={errors.phone}
+                        errors={errors["Contact.Phone"]}
                         value={values.phone}
                         onChange={handleChange}
                     />
@@ -130,7 +134,7 @@
                         label="Address"
                         name="address"
                         type="text"
-                        errors={errors.address}
+                        errors={errors["Contact.Address"]}
                         value={values.address}
                         onChange={handleChange}
                     />
@@ -140,7 +144,7 @@
                         label="City"
                         name="city"
                         type="text"
-                        errors={errors.city}
+                        errors={errors["Contact.City"]}
                         value={values.city}
                         onChange={handleChange}
                     />
@@ -150,7 +154,7 @@
                         label="Province/State"
                         name="region"
                         type="text"
-                        errors={errors.region}
+                        errors={errors["Contact.Region"]}
                         value={values.region}
                         onChange={handleChange}
                     />
@@ -159,7 +163,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
                         name="country"
-                        errors={errors.country}
+                        errors={errors["Contact.Country"]}
                         value={values.country}
                         onChange={handleChange}
                     >
@@ -173,7 +177,7 @@
                         label="Postal Code"
                         name="postal_code"
                         type="text"
-                        errors={errors.postal_code}
+                        errors={errors["Contact.PostalCode"]}
                         value={values.postal_code}
                         onChange={handleChange}
                     />

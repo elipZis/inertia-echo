@@ -61,6 +61,10 @@
             </h1>
         </div>
 
+        {#if errors && errors["general"] }
+            <div class="form-error">{errors["general"]}</div>
+        {/if}
+
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form name="createForm" on:submit|preventDefault={handleSubmit}>
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
@@ -68,7 +72,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name"
                         name="FirstName"
-                        errors={errors.first_name}
+                        errors={errors["User.FirstName"]}
                         value={values.FirstName}
                         onChange={handleChange}
                     />
@@ -77,7 +81,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name"
                         name="LastName"
-                        errors={errors.last_name}
+                        errors={errors["User.LastName"]}
                         value={values.LastName}
                         onChange={handleChange}
                     />
@@ -87,7 +91,7 @@
                         label="Email*"
                         name="Email"
                         type="email"
-                        errors={errors.email}
+                        errors={errors["User.Email"]}
                         value={values.Email}
                         onChange={handleChange}
                     />
@@ -97,7 +101,7 @@
                         label="Password*"
                         name="Password"
                         type="password"
-                        errors={errors.password}
+                        errors={errors["User.Password"]}
                         value={values.Password}
                         onChange={handleChange}
                     />
@@ -106,7 +110,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Owner"
                         name="Owner"
-                        errors={errors.owner}
+                        errors={errors["User.Owner"]}
                         value={values.Owner}
                         onChange={handleChange}
                     >
@@ -119,7 +123,7 @@
                         label="Photo"
                         name="Photo"
                         accept="image/*"
-                        errors={errors.photo}
+                        errors={errors["User.Photo"]}
                         value={values.Photo}
                         onChange={handleFileChange}
                     />

@@ -55,6 +55,10 @@
             <span class="text-indigo-600 font-medium"> /</span> Create
         </h1>
 
+        {#if errors && errors["general"] }
+            <div class="form-error">{errors["general"]}</div>
+        {/if}
+
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
@@ -62,7 +66,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name*"
                         name="FirstName"
-                        errors={errors.first_name}
+                        errors={errors["Contact.FirstName"]}
                         value={values.FirstName}
                         onChange={handleChange}
                     />
@@ -71,7 +75,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name*"
                         name="LastName"
-                        errors={errors.last_name}
+                        errors={errors["Contact.LastName"]}
                         value={values.LastName}
                         onChange={handleChange}
                     />
@@ -80,7 +84,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Organization"
                         name="OrganizationId"
-                        errors={errors.organization_id}
+                        errors={errors["Contact.OrganizationId"]}
                         value={values.OrganizationId}
                         onChange={handleChange}
                     >
@@ -95,7 +99,7 @@
                         label="Email"
                         name="Email"
                         type="email"
-                        errors={errors.email}
+                        errors={errors["Contact.Email"]}
                         value={values.Email}
                         onChange={handleChange}
                     />
@@ -105,7 +109,7 @@
                         label="Phone"
                         name="Phone"
                         type="text"
-                        errors={errors.phone}
+                        errors={errors["Contact.Phone"]}
                         value={values.Phone}
                         onChange={handleChange}
                     />
@@ -115,7 +119,7 @@
                         label="Address"
                         name="Address"
                         type="text"
-                        errors={errors.address}
+                        errors={errors["Contact.Address"]}
                         value={values.Address}
                         onChange={handleChange}
                     />
@@ -125,7 +129,7 @@
                         label="City"
                         name="City"
                         type="text"
-                        errors={errors.city}
+                        errors={errors["Contact.City"]}
                         value={values.City}
                         onChange={handleChange}
                     />
@@ -135,7 +139,7 @@
                         label="Province/State"
                         name="Region"
                         type="text"
-                        errors={errors.region}
+                        errors={errors["Contact.Region"]}
                         value={values.Region}
                         onChange={handleChange}
                     />
@@ -144,7 +148,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
                         name="Country"
-                        errors={errors.country}
+                        errors={errors["Contact.Country"]}
                         value={values.Country}
                         onChange={handleChange}
                     >
@@ -158,7 +162,7 @@
                         label="Postal Code"
                         name="PostalCode"
                         type="text"
-                        errors={errors.postal_code}
+                        errors={errors["Contact.PostalCode"]}
                         value={values.PostalCode}
                         onChange={handleChange}
                     />

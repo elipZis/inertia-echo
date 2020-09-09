@@ -50,6 +50,10 @@
                 <h1 class="text-center font-bold text-3xl">Welcome Back!</h1>
                 <div class="mx-auto mt-6 w-24 border-b-2"/>
 
+                {#if errors && errors["general"] }
+                    <div class="form-error">{errors["general"]}</div>
+                {/if}
+
                 <TextInput
                         className="mt-10"
                         label="Email"

@@ -80,6 +80,10 @@
             <TrashedMessage>This user has been deleted.</TrashedMessage>
         {/if}
 
+        {#if errors && errors["general"] }
+            <div class="form-error">{errors["general"]}</div>
+        {/if}
+
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
@@ -87,7 +91,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name"
                         name="first_name"
-                        errors={errors.first_name}
+                        errors={errors["User.FirstName"]}
                         value={values.first_name}
                         onChange={handleChange}
                     />
@@ -96,7 +100,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name"
                         name="last_name"
-                        errors={errors.last_name}
+                        errors={errors["User.LastName"]}
                         value={values.last_name}
                         onChange={handleChange}
                     />
@@ -106,7 +110,7 @@
                         label="Email"
                         name="email"
                         type="email"
-                        errors={errors.email}
+                        errors={errors["User.Email"]}
                         value={values.email}
                         onChange={handleChange}
                     />
@@ -116,7 +120,7 @@
                         label="Password"
                         name="password"
                         type="password"
-                        errors={errors.password}
+                        errors={errors["User.Password"]}
                         value={values.password}
                         onChange={handleChange}
                     />
@@ -125,7 +129,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Owner"
                         name="Owner"
-                        errors={errors.owner}
+                        errors={errors["User.Owner"]}
                         value={values.Owner}
                         onChange={handleChange}
                     >

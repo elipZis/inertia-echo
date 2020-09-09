@@ -66,8 +66,8 @@ func (this *Handler) CreateUser(c echo.Context) error {
 //
 func (this *Handler) UpdateUser(c echo.Context) error {
 	user := model.User{}
-	if err := this.bindRequest(c, &user); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+	if err := this.bindAndValidateRequest(c, &user); err != nil {
+		return util.NewError().AddError(err).Render(c, "Users/Edit", http.StatusUnprocessableEntity)
 	}
 	// No id, no update
 	if user.Id <= 0 {

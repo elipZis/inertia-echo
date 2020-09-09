@@ -68,6 +68,10 @@
             <TrashedMessage>This organization has been deleted.</TrashedMessage>
         {/if}
 
+        {#if errors && errors["general"] }
+            <div class="form-error">{errors["general"]}</div>
+        {/if}
+
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
@@ -75,7 +79,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Name"
                         name="name"
-                        errors={errors.name}
+                        errors={errors["Organization.Name"]}
                         value={values.name}
                         onChange={handleChange}
                     />
@@ -85,7 +89,7 @@
                         label="Email"
                         name="email"
                         type="email"
-                        errors={errors.email}
+                        errors={errors["Organization.Email"]}
                         value={values.email}
                         onChange={handleChange}
                     />
@@ -95,7 +99,7 @@
                         label="Phone"
                         name="phone"
                         type="text"
-                        errors={errors.phone}
+                        errors={errors["Organization.Phone"]}
                         value={values.phone}
                         onChange={handleChange}
                     />
@@ -105,7 +109,7 @@
                         label="Address"
                         name="address"
                         type="text"
-                        errors={errors.address}
+                        errors={errors["Organization.Address"]}
                         value={values.address}
                         onChange={handleChange}
                     />
@@ -115,7 +119,7 @@
                         label="City"
                         name="city"
                         type="text"
-                        errors={errors.city}
+                        errors={errors["Organization.City"]}
                         value={values.city}
                         onChange={handleChange}
                     />
@@ -125,7 +129,7 @@
                         label="Province/State"
                         name="region"
                         type="text"
-                        errors={errors.region}
+                        errors={errors["Organization.Region"]}
                         value={values.region}
                         onChange={handleChange}
                     />
@@ -134,7 +138,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
                         name="country"
-                        errors={errors.country}
+                        errors={errors["Organization.Country"]}
                         value={values.country}
                         onChange={handleChange}
                     >
@@ -148,7 +152,7 @@
                         label="Postal Code"
                         name="postal_code"
                         type="text"
-                        errors={errors.postal_code}
+                        errors={errors["Organization.PostalCode"]}
                         value={values.postal_code}
                         onChange={handleChange}
                     />

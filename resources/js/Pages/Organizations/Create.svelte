@@ -51,6 +51,10 @@
             <span class="text-indigo-600 font-medium"> /</span> Create
         </h1>
 
+        {#if errors && errors["general"] }
+            <div class="form-error">{errors["general"]}</div>
+        {/if}
+
         <div class="bg-white rounded shadow overflow-hidden max-w-3xl">
             <form on:submit|preventDefault={handleSubmit}>
                 <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
@@ -58,7 +62,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Name*"
                         name="Name"
-                        errors={errors.name}
+                        errors={errors["Organization.Name"]}
                         value={values.Name}
                         onChange={handleChange}
                     />
@@ -68,7 +72,7 @@
                         label="Email"
                         name="Email"
                         type="email"
-                        errors={errors.email}
+                        errors={errors["Organization.Email"]}
                         value={values.Email}
                         onChange={handleChange}
                     />
@@ -78,7 +82,7 @@
                         label="Phone"
                         name="Phone"
                         type="text"
-                        errors={errors.phone}
+                        errors={errors["Organization.Phone"]}
                         value={values.Phone}
                         onChange={handleChange}
                     />
@@ -88,7 +92,7 @@
                         label="Address"
                         name="Address"
                         type="text"
-                        errors={errors.address}
+                        errors={errors["Organization.Address"]}
                         value={values.Address}
                         onChange={handleChange}
                     />
@@ -98,7 +102,7 @@
                         label="City"
                         name="City"
                         type="text"
-                        errors={errors.city}
+                        errors={errors["Organization.City"]}
                         value={values.City}
                         onChange={handleChange}
                     />
@@ -108,7 +112,7 @@
                         label="Province/State"
                         name="Region"
                         type="text"
-                        errors={errors.region}
+                        errors={errors["Organization.Region"]}
                         value={values.Region}
                         onChange={handleChange}
                     />
@@ -117,7 +121,7 @@
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
                         name="Country"
-                        errors={errors.country}
+                        errors={errors["Organization.Country"]}
                         value={values.Country}
                         onChange={handleChange}
                     >
@@ -131,7 +135,7 @@
                         label="Postal Code"
                         name="PostalCode"
                         type="text"
-                        errors={errors.postal_code}
+                        errors={errors["Organization.PostalCode"]}
                         value={values.PostalCode}
                         onChange={handleChange}
                     />
