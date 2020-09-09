@@ -3,7 +3,6 @@ package handler
 import (
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -68,7 +67,6 @@ func (this *Handler) UpdateContact(c echo.Context) error {
 func (this *Handler) StoreContact(c echo.Context) error {
 	m := model.Contact{}
 	if err := this.bindRequest(c, &m); err != nil {
-		fmt.Println("Store Contact", err)
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
 	//

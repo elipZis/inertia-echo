@@ -5,6 +5,8 @@
     $: flash = $page.flash ?? [];
     $: errors = $page.errors ?? [];
 
+    flash = flash ?? []
+    errors = errors ?? []
     let numOfErrors = Object.keys(errors).length;
 
     let visible = true;

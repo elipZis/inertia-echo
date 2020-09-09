@@ -2,7 +2,9 @@ package router
 
 import (
 	"context"
+	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
+	"encoding/gob"
 	"fmt"
 	"github.com/gorilla/sessions"
 	_ "github.com/joho/godotenv/autoload"
@@ -12,6 +14,11 @@ import (
 	"github.com/labstack/gommon/log"
 	"strconv"
 )
+
+//
+func init() {
+	gob.Register(&model.User{})
+}
 
 //
 type Router struct {
@@ -37,7 +44,10 @@ func NewRouter() (this *Router) {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
-	this.Echo.Use(session.Middleware(sessions.NewCookieStore([]byte(util.GetEnvOrDefault("SESSION_SECRET", "supersecretsessionsecret")))))
+	// Session
+	cookieStore := sessions.NewCookieStore([]byte(util.GetEnvOrDefault("SESSION_SECRET", "supersecretsessionsecret")))
+	this.Echo.Use(session.Middleware(cookieStore))
+	// Form methods
 	this.Echo.Pre(middleware.MethodOverrideWithConfig(middleware.MethodOverrideConfig{
 		Getter: middleware.MethodFromForm("_method"),
 	}))

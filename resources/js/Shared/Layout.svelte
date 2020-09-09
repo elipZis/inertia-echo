@@ -17,7 +17,7 @@
 
             <!-- To reset scroll region (https://inertiajs.com/pages#scroll-regions) add `scroll-region="true"` to div below -->
             <div class="w-full overflow-hidden px-4 py-8 md:p-12 overflow-y-auto">
-<!--                <FlashMessages />-->
+                <FlashMessages />
                 <slot />
             </div>
         </div>

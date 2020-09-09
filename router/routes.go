@@ -4,7 +4,6 @@ import (
 	"elipzis.com/inertia-echo/handler"
 	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/router/middleware"
-	"elipzis.com/inertia-echo/util"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -13,15 +12,18 @@ import (
 func (this *Router) Register(rootGroup *echo.Group) {
 	// Handler
 	controller := handler.NewHandler(this.Echo)
-	// router.Echo.Renderer = controller
 	this.Echo.Use(inertia.MiddlewareWithConfig(inertia.MiddlewareConfig{
 		Inertia: controller.Inertia,
 	}))
+	this.Echo.Use(middleware.FlashMiddleware(controller.Inertia))
+
+	// Auth middleware
+	authMiddleware := middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{})
 
 	// Authentication Routes
 	rootGroup.GET("", func(c echo.Context) error {
 		c.Request().Method = http.MethodGet
-		return c.Redirect(http.StatusMovedPermanently, util.GetRedirectUrl(c, "/dashboard"))
+		return c.Redirect(http.StatusMovedPermanently, handler.GetRedirectUrl(c, "/dashboard"))
 	})
 	rootGroup.GET("/login", controller.LoginForm).Name = "login"
 	rootGroup.POST("/login", controller.Login).Name = "login.attempt"
@@ -29,12 +31,12 @@ func (this *Router) Register(rootGroup *echo.Group) {
 
 	// Dashboard
 	dashboardGroup := rootGroup.Group("/dashboard")
-	dashboardGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	dashboardGroup.Use(authMiddleware)
 	dashboardGroup.GET("", controller.Dashboard).Name = "dashboard"
 
 	// Organizations
 	organizationsGroup := rootGroup.Group("/organizations")
-	organizationsGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	organizationsGroup.Use(authMiddleware)
 	organizationsGroup.GET("", controller.Organizations).Name = "organizations"
 	organizationsGroup.GET("/create", controller.CreateOrganization).Name = "organizations.create"
 	organizationsGroup.POST("/store", controller.StoreOrganization).Name = "organizations.store"
@@ -44,7 +46,7 @@ func (this *Router) Register(rootGroup *echo.Group) {
 
 	// User handling
 	usersGroup := rootGroup.Group("/users")
-	usersGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	usersGroup.Use(authMiddleware)
 	usersGroup.GET("", controller.Users).Name = "users"
 	usersGroup.GET("/edit", controller.EditUser).Name = "users.edit"
 	usersGroup.GET("/create", controller.CreateUser).Name = "users.create"
@@ -54,7 +56,7 @@ func (this *Router) Register(rootGroup *echo.Group) {
 
 	// Contacts
 	contactsGroup := rootGroup.Group("/contacts")
-	contactsGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	contactsGroup.Use(authMiddleware)
 	contactsGroup.GET("", controller.Contacts).Name = "contacts"
 	contactsGroup.GET("/create", controller.CreateContact).Name = "contacts.create"
 	contactsGroup.POST("/store", controller.StoreContact).Name = "contacts.store"
@@ -64,13 +66,11 @@ func (this *Router) Register(rootGroup *echo.Group) {
 
 	// Reports
 	reportsGroup := rootGroup.Group("/reports")
-	reportsGroup.Use(middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{}))
+	reportsGroup.Use(authMiddleware)
 	reportsGroup.GET("", controller.Reports).Name = "reports"
 
 	// 500 error
 	rootGroup.GET("/500", func(c echo.Context) error {
 		return c.HTML(http.StatusInternalServerError, "500er Error")
 	}).Name = "500"
-
-	// Do stuff!
 }

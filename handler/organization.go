@@ -28,7 +28,8 @@ func (this *Handler) EditOrganization(c echo.Context) error {
 			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 		} else {
 			return this.Render(c, http.StatusOK, "Organizations/Edit", map[string]interface{}{
-				"data": data,
+				"data":     data,
+				"contacts": this.repository.GetOrganizationContacts(data),
 			})
 		}
 	}
@@ -55,6 +56,7 @@ func (this *Handler) UpdateOrganization(c echo.Context) error {
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
+	this.addSuccessFlash(c, "Organization updated")
 	return this.Redirect(c, "/organizations", http.StatusFound, "GET")
 }
 
@@ -69,6 +71,7 @@ func (this *Handler) StoreOrganization(c echo.Context) error {
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
+	this.addSuccessFlash(c, "Organization stored")
 	return this.Redirect(c, "/organizations", http.StatusFound, "GET")
 }
 
@@ -87,5 +90,6 @@ func (this *Handler) DeleteOrganization(c echo.Context) error {
 	if err != nil {
 		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
 	}
+	this.addSuccessFlash(c, "Organization deleted")
 	return this.Redirect(c, "/organizations", http.StatusFound, "GET")
 }

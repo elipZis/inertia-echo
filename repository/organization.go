@@ -17,7 +17,7 @@ func (this *Repository) CreateOrganization(model *model.Organization) error {
 //
 func (this *Repository) GetOrganizations() (*[]model.Organization, error) {
 	var m []model.Organization
-	if err := this.Conn.Preload("Contacts").Find(&m).Error; err != nil {
+	if err := this.Conn.Find(&m).Error; err != nil {
 		return nil, err
 	}
 	return &m, nil
@@ -30,4 +30,11 @@ func (this *Repository) GetOrganizationById(id uint) (*model.Organization, error
 		return nil, err
 	}
 	return &m, nil
+}
+
+//
+func (this *Repository) GetOrganizationContacts(organization *model.Organization) *[]model.Contact {
+	var contacts []model.Contact
+	this.Conn.Model(&organization).Related(&contacts)
+	return &contacts
 }

@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"elipzis.com/inertia-echo/handler"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
-	"elipzis.com/inertia-echo/util"
 	"fmt"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -57,13 +57,13 @@ func AuthMiddlewareWithConfig(config AuthMiddlewareConfig) echo.MiddlewareFunc {
 			jwtFunc := jwtMiddleware(next)
 			if err := jwtFunc(c); err != nil {
 				// c.Error(err)
-				fmt.Println(err)
+				// fmt.Println(err)
 
 				switch v := err.(type) {
 				case *echo.HTTPError:
 					if (v.Code == http.StatusUnauthorized || v.Code == http.StatusBadRequest) && strings.Contains(strings.ToLower(v.Message.(string)), "jwt") {
 						// Redirect to login in case something wrong happened while checking the url
-						url := util.GetBaseUrl(c)
+						url := handler.GetBaseUrl(c)
 						c.Request().Method = http.MethodGet
 						// Try to find a route named "login"
 						for _, route := range c.Echo().Routes() {

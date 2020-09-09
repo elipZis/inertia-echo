@@ -22,7 +22,7 @@ func (this *Handler) Login(c echo.Context) error {
 	if err != nil {
 		return util.NewError().AddError(err).Render(c, "Auth/Login", http.StatusUnprocessableEntity)
 	}
-	if err = util.SetSession(c, "user", loggedInUser, nil); err != nil {
+	if err = this.setSession(c, "user", loggedInUser, nil); err != nil {
 		return util.NewError().AddError(err).Render(c, "Auth/Login", http.StatusUnprocessableEntity)
 	}
 	return c.Redirect(http.StatusFound, "/")
@@ -30,7 +30,7 @@ func (this *Handler) Login(c echo.Context) error {
 
 //
 func (this *Handler) Logout(c echo.Context) error {
-	if err := util.DeleteSession(c); err != nil {
+	if err := this.deleteSession(c); err != nil {
 		return util.NewError().AddError(err).Render(c, "Auth/Login", http.StatusUnprocessableEntity)
 	}
 	return c.Render(200, "Auth/Login", map[string]interface{}{})

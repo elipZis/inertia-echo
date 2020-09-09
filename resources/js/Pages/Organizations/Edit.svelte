@@ -12,12 +12,13 @@
 
     const route = window.route;
 
-    let { data } = $page;
+    let { data, contacts } = $page;
     $: errors = $page.errors ?? [];
     $: data = $page.data;
 
     let sending = false;
     let values = {
+        id: data.Id,
         name: data.Name || '',
         email: data.Email || '',
         phone: data.Phone || '',
@@ -37,12 +38,12 @@
 
     function handleSubmit() {
         sending = true;
-        Inertia.put(route('organizations.update', data.Id), values).then(() => sending = false);
+        Inertia.post(route('organizations.update', {organization: data.Id}), values).then(() => sending = false);
     }
 
     function destroy() {
         if (confirm('Are you sure you want to delete this organization?')) {
-            Inertia.delete(route('organizations.destroy', data.Id));
+            Inertia.delete(route('organizations.destroy', {organization: data.Id}));
         }
     }
 </script>
@@ -181,21 +182,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#if !data.Contacts || data.Contacts.length === 0}
+                    {#if !contacts || contacts.length === 0}
                         <tr>
                             <td class="border-t px-6 py-4" colspan="4">
                                 No contacts found.
                             </td>
                         </tr>
                     {:else}
-                        {#each data.Contacts as { Id, Name, Phone, City, DeletedAt } (Id)}
+                        {#each contacts as { Id, FirstName, LastName, Phone, City, DeletedAt } (Id)}
                             <tr class="hover:bg-gray-100 focus-within:bg-gray-100">
                                 <td class="border-t">
                                     <InertiaLink
                                         href={route('contacts.edit', {contact: Id})}
                                         class="px-6 py-4 flex items-center focus:text-indigo"
                                     >
-                                        {Name}
+                                        {FirstName + " " + LastName}
 
                                         {#if DeletedAt}
                                             <Icon

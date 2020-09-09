@@ -18,6 +18,7 @@
 
     let sending = false;
     let values = {
+        id: data.Id,
         first_name: data.FirstName || '',
         last_name: data.LastName || '',
         organization_id: data.OrganizationId || '',
@@ -39,12 +40,12 @@
 
     function handleSubmit(e) {
         sending = true;
-        Inertia.put(route('contacts.update', data.Id), values).then(() => sending = false);
+        Inertia.post(route('contacts.update', {contact: data.Id}), values).then(() => sending = false);
     }
 
     function destroy() {
         if (confirm('Are you sure you want to delete this contact?')) {
-            Inertia.delete(route('contacts.destroy', data.Id));
+            Inertia.delete(route('contacts.destroy', {contact: data.Id}));
         }
     }
 </script>
@@ -99,8 +100,8 @@
                         onChange={handleChange}
                     >
                         <option value=""></option>
-                        {#each organizations as { id, name } (id)}
-                            <option value={`${id}`}>{name}</option>
+                        {#each organizations as { Id, Name } (Id)}
+                            <option value={`${Id}`}>{Name}</option>
                         {/each}
                         <option value="CA">Canada</option>
                         <option value="US">United States</option>

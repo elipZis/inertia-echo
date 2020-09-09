@@ -52,7 +52,8 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 				// Reflash?
 				if s, err := session.Get("session", c); err == nil {
 					flashes := s.Flashes()
-					config.Inertia.Share("flash", flashes)
+					_ = s.Save(c.Request(), c.Response())
+					// config.Inertia.Share("flash", flashes)
 					for _, flash := range flashes {
 						s.AddFlash(flash)
 					}

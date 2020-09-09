@@ -5,11 +5,14 @@ import (
 	"elipzis.com/inertia-echo/repository"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
-	"elipzis.com/inertia-echo/util"
+	"encoding/gob"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strings"
 )
 
 //
@@ -43,14 +46,18 @@ func (this *Handler) Redirect(c echo.Context, path string, code int, method stri
 	if code == 0 {
 		code = http.StatusFound
 	}
+	// Change of request method does not work with 307 and 308 by specification (as it seems)
+	if code >= http.StatusTemporaryRedirect && code <= http.StatusPermanentRedirect && method != "" {
+		code = http.StatusFound
+	}
+
 	if method == "" {
 		method = http.MethodGet
 		c.Request().Method = method
-	} else if code >= http.StatusTemporaryRedirect && code <= http.StatusPermanentRedirect {
-		// Change of request method does not work with 307 and 308 by specification (as it seems)
-		code = http.StatusFound
+	} else {
+		c.Request().Method = method
 	}
-	return c.Redirect(code, util.GetRedirectUrl(c, path))
+	return c.Redirect(code, GetRedirectUrl(c, path))
 }
 
 //
@@ -132,4 +139,60 @@ func (this *Handler) bindAndValidateRequest(c echo.Context, model interface{}) e
 		return err
 	}
 	return nil
+}
+
+//
+func (this *Handler) setSession(c echo.Context, key string, value interface{}, options *sessions.Options) error {
+	// Register whatever object to be saved
+	gob.Register(value)
+
+	// Set it
+	s, _ := session.Get("session", c)
+	if options != nil {
+		s.Options = options
+	}
+	s.Values[key] = value
+	return s.Save(c.Request(), c.Response())
+}
+
+//
+func (this *Handler) deleteSession(c echo.Context) error {
+	s, _ := session.Get("session", c)
+	s.Options.MaxAge = -1
+	return s.Save(c.Request(), c.Response())
+}
+
+//
+func (this *Handler) addFlash(c echo.Context, value interface{}, vars ...string) error {
+	s, _ := session.Get("session", c)
+	s.AddFlash(value, vars...)
+	return s.Save(c.Request(), c.Response())
+}
+
+//
+func (this *Handler) addSuccessFlash(c echo.Context, value interface{}) error {
+	return this.addFlash(c, value, "_flash_success")
+}
+
+//
+func (this *Handler) addErrorFlash(c echo.Context, value interface{}) error {
+	return this.addFlash(c, value, "_flash_error")
+}
+
+//
+func (this *Handler) addWarningFlash(c echo.Context, value interface{}) error {
+	return this.addFlash(c, value, "_flash_warning")
+}
+
+//
+func GetRedirectUrl(c echo.Context, path string) string {
+	return GetBaseUrl(c) + path
+}
+
+//
+func GetBaseUrl(c echo.Context) string {
+	req, scheme := c.Request(), c.Scheme()
+	host := req.Host
+	url := scheme + "://" + host // + req.RequestURI
+	return strings.TrimSuffix(url, "/")
 }
