@@ -114,6 +114,7 @@ func NewInertiaWithConfig(config InertiaConfig) (this *Inertia) {
 
 // Render renders a template document
 func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return this.templates.ExecuteTemplate(w, name, data)
 	isMap := reflect.TypeOf(data).Kind() == reflect.Map
 	if this.templates.Lookup(name) != nil {
 		if isMap {

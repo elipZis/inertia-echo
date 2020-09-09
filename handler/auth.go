@@ -9,7 +9,7 @@ import (
 
 //
 func (this *Handler) Test(c echo.Context) error {
-	return c.JSON(http.StatusOK, map[string]interface{}{
+	return c.Render(http.StatusOK, "test", map[string]interface{}{
 		"test": "ok",
 	})
 }
