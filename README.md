@@ -69,7 +69,7 @@ and many more.
 
 ## Disclaimer
 This is an example app to illustrate the basic usage of different libraries. 
-This demo, source and the whole package comes without warranty. It may or may not harm your computer. 
+This demo, source, and the whole package comes without a warranty. It may or may not harm your computer. 
 It is not a reference for best-practices or security concerns or any other application concept but an exemplary use-case on how to integrate multiple systems together.
 Please use with care and not as absolute reference.  
 Any damage cannot be related back to the author. 
