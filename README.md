@@ -28,6 +28,14 @@ You may use the example file provided in this repository which requires [Webpack
 ## Usage
 Create a new [Echo][3] instance and register the Inertia middleware with it
 ```golang
+import (
+	...
+
+	"github.com/elipzis/inertia-echo"
+	
+    ...
+)
+
 e := echo.New()
 e.Use(inertia.Middleware(e))
 ```
