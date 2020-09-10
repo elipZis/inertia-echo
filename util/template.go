@@ -34,7 +34,7 @@ func Mix(path string, manifestPath ...string) template.HTML {
 	}
 
 	// Check if another manifest path was given
-	mPath := GetEnvOrDefault("PUBLIC_PATH", "public") + "/mix-manifest.json"
+	mPath := GetEnvOrDefault("INERTIA_PUBLIC_PATH", "public") + "/mix-manifest.json"
 	if len(manifestPath) > 0 {
 		mPath = manifestPath[0]
 	}
