@@ -18,15 +18,15 @@
 
     let sending = false;
     let values = {
-        id: data.Id,
+        Id: data.Id,
         name: data.Name || '',
-        email: data.Email || '',
-        phone: data.Phone || '',
-        address: data.Address || '',
-        city: data.City || '',
-        region: data.Region || '',
-        country: data.Country || '',
-        postal_code: data.PostalCode || ''
+        Email: data.Email || '',
+        Phone: data.Phone || '',
+        Address: data.Address || '',
+        City: data.City || '',
+        Region: data.Region || '',
+        Country: data.Country || '',
+        PostalCode: data.PostalCode || ''
     };
 
     function handleChange({ target: { name, value } }) {
@@ -87,59 +87,59 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Email"
-                        name="email"
+                        name="Email"
                         type="email"
                         errors={errors["Organization.Email"]}
-                        value={values.email}
+                        value={values.Email}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Phone"
-                        name="phone"
+                        name="Phone"
                         type="text"
                         errors={errors["Organization.Phone"]}
-                        value={values.phone}
+                        value={values.Phone}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Address"
-                        name="address"
+                        name="Address"
                         type="text"
                         errors={errors["Organization.Address"]}
-                        value={values.address}
+                        value={values.Address}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="City"
-                        name="city"
+                        name="City"
                         type="text"
                         errors={errors["Organization.City"]}
-                        value={values.city}
+                        value={values.City}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Province/State"
-                        name="region"
+                        name="Region"
                         type="text"
                         errors={errors["Organization.Region"]}
-                        value={values.region}
+                        value={values.Region}
                         onChange={handleChange}
                     />
 
                     <SelectInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
-                        name="country"
+                        name="Country"
                         errors={errors["Organization.Country"]}
-                        value={values.country}
+                        value={values.Country}
                         onChange={handleChange}
                     >
                         <option value=""></option>
@@ -150,10 +150,10 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Postal Code"
-                        name="postal_code"
+                        name="PostalCode"
                         type="text"
                         errors={errors["Organization.PostalCode"]}
-                        value={values.postal_code}
+                        value={values.PostalCode}
                         onChange={handleChange}
                     />
                 </div>

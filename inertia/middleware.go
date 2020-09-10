@@ -2,7 +2,6 @@ package inertia
 
 import (
 	"elipzis.com/inertia-echo/util"
-	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"log"
@@ -48,20 +47,20 @@ func MiddlewareWithConfig(config MiddlewareConfig) echo.MiddlewareFunc {
 				return nil
 			}
 
-			if req.Method == "GET" && req.Header.Get(HeaderVersion) != config.Inertia.GetVersion() {
-				// Reflash?
-				if s, err := session.Get("session", c); err == nil {
-					flashes := s.Flashes()
-					_ = s.Save(c.Request(), c.Response())
-					// config.Inertia.Share("flash", flashes)
-					for _, flash := range flashes {
-						s.AddFlash(flash)
-					}
-				}
-
-				res.Header().Set(HeaderLocation, req.URL.String())
-				return c.String(http.StatusConflict, "")
-			}
+			// if req.Method == "GET" && req.Header.Get(HeaderVersion) != config.Inertia.GetVersion() {
+			// 	// Reflash?
+			// 	if s, err := session.Get("session", c); err == nil {
+			// 		flashes := s.Flashes()
+			// 		_ = s.Save(c.Request(), c.Response())
+			// 		// config.Inertia.Share("flash", flashes)
+			// 		for _, flash := range flashes {
+			// 			s.AddFlash(flash)
+			// 		}
+			// 	}
+			//
+			// 	res.Header().Set(HeaderLocation, req.URL.String())
+			// 	return c.String(http.StatusConflict, "")
+			// }
 
 			if exists, _ := util.InArray(req.Method, []string{"PUT", "PATCH", "DELETE"}); exists && res.Status == 302 {
 				res.Status = http.StatusSeeOther

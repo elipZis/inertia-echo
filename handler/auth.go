@@ -41,10 +41,10 @@ func (this *Handler) Logout(c echo.Context) error {
 func (this *Handler) Register(c echo.Context) error {
 	user := model.User{}
 	if err := this.bindAndValidateRequest(c, &user); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
 	if err := this.service.Register(&user); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
 	return c.JSON(http.StatusCreated, user)
 }

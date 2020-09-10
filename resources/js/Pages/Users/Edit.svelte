@@ -18,10 +18,10 @@
 
     let sending = false;
     let values = {
-        id: data.Id,
-        first_name: data.FirstName || '',
-        last_name: data.LastName || '',
-        email: data.Email || '',
+        Id: data.Id,
+        FirstName: data.FirstName || '',
+        LastName: data.LastName || '',
+        Email: data.Email || '',
         password: data.Password || '',
         owner: data.Owner ? '1' : '0' || '0',
         photo: '',
@@ -54,7 +54,7 @@
     }
 </script>
 
-<Helmet title={`${values.first_name} ${values.last_name}`} />
+<Helmet title={`${values.FirstName} ${values.LastName}`} />
 
 <Layout>
     <div>
@@ -68,7 +68,7 @@
                 </InertiaLink>
 
                 <span class="text-indigo-600 font-medium mx-2">/</span>
-                {values.first_name} {values.last_name}
+                {values.FirstName} {values.LastName}
             </h1>
 
             {#if data.PhotoPath}
@@ -90,28 +90,28 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name"
-                        name="first_name"
+                        name="FirstName"
                         errors={errors["User.FirstName"]}
-                        value={values.first_name}
+                        value={values.FirstName}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name"
-                        name="last_name"
+                        name="LastName"
                         errors={errors["User.LastName"]}
-                        value={values.last_name}
+                        value={values.LastName}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Email"
-                        name="email"
+                        name="Email"
                         type="email"
                         errors={errors["User.Email"]}
-                        value={values.email}
+                        value={values.Email}
                         onChange={handleChange}
                     />
 

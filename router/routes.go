@@ -15,7 +15,7 @@ func (this *Router) Register(rootGroup *echo.Group) {
 	this.Echo.Use(inertia.MiddlewareWithConfig(inertia.MiddlewareConfig{
 		Inertia: controller.Inertia,
 	}))
-	this.Echo.Use(middleware.FlashMiddleware(controller.Inertia))
+	this.Echo.Use(middleware.SessionMiddleware(controller.Inertia))
 
 	// Auth middleware
 	authMiddleware := middleware.AuthMiddlewareWithConfig(middleware.AuthMiddlewareConfig{})

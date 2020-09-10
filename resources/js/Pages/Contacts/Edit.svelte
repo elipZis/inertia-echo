@@ -8,6 +8,7 @@
     import TextInput from '@/Shared/TextInput.svelte';
     import SelectInput from '@/Shared/SelectInput.svelte';
     import TrashedMessage from '@/Shared/TrashedMessage.svelte';
+    import { toFormData } from '@/utils';
 
     const route = window.route;
 
@@ -18,17 +19,17 @@
 
     let sending = false;
     let values = {
-        id: data.Id,
-        first_name: data.FirstName || '',
-        last_name: data.LastName || '',
-        organization_id: data.OrganizationId || '',
-        email: data.Email || '',
-        phone: data.Phone || '',
-        address: data.Address || '',
-        city: data.City || '',
-        region: data.Region || '',
-        country: data.Country || '',
-        postal_code: data.PostalCode || ''
+        Id: data.Id,
+        FirstName: data.FirstName || '',
+        LastName: data.LastName || '',
+        OrganizationId: data.OrganizationId || '',
+        Email: data.Email || '',
+        Phone: data.Phone || '',
+        Address: data.Address || '',
+        City: data.City || '',
+        Region: data.Region || '',
+        Country: data.Country || '',
+        PostalCode: data.PostalCode || ''
     };
 
     function handleChange({ target: { name, value } }) {
@@ -40,7 +41,9 @@
 
     function handleSubmit(e) {
         sending = true;
-        Inertia.post(route('contacts.update', {contact: data.Id}), values).then(() => sending = false);
+        console.log(values);
+        const formData = toFormData(values);
+        Inertia.post(route('contacts.update', {contact: data.Id}), formData).then(() => sending = false);
     }
 
     function destroy() {
@@ -50,7 +53,7 @@
     }
 </script>
 
-<Helmet title={`${values.first_name} ${values.last_name}`} />
+<Helmet title={`${values.FirstName} ${values.LastName}`} />
 
 <Layout>
     <div>
@@ -63,7 +66,7 @@
             </InertiaLink>
 
             <span class="text-indigo-600 font-medium mx-2">/</span>
-            {values.first_name} {values.last_name}
+            {values.FirstName} {values.LastName}
         </h1>
 
         {#if data.DeletedAt}
@@ -80,27 +83,27 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="First Name"
-                        name="first_name"
+                        name="FirstName"
                         errors={errors["Contact.FirstName"]}
-                        value={values.first_name}
+                        value={values.FirstName}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Last Name"
-                        name="last_name"
+                        name="LastName"
                         errors={errors["Contact.LastName"]}
-                        value={values.last_name}
+                        value={values.LastName}
                         onChange={handleChange}
                     />
 
                     <SelectInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Organization"
-                        name="organization_id"
+                        name="OrganizationId"
                         errors={errors["Contact.OrganizationId"]}
-                        value={values.organization_id}
+                        value={values.OrganizationId}
                         onChange={handleChange}
                     >
                         <option value=""></option>
@@ -112,59 +115,59 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Email"
-                        name="email"
+                        name="Email"
                         type="email"
                         errors={errors["Contact.Email"]}
-                        value={values.email}
+                        value={values.Email}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Phone"
-                        name="phone"
+                        name="Phone"
                         type="text"
                         errors={errors["Contact.Phone"]}
-                        value={values.phone}
+                        value={values.Phone}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Address"
-                        name="address"
+                        name="Address"
                         type="text"
                         errors={errors["Contact.Address"]}
-                        value={values.address}
+                        value={values.Address}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="City"
-                        name="city"
+                        name="City"
                         type="text"
                         errors={errors["Contact.City"]}
-                        value={values.city}
+                        value={values.City}
                         onChange={handleChange}
                     />
 
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Province/State"
-                        name="region"
+                        name="Region"
                         type="text"
                         errors={errors["Contact.Region"]}
-                        value={values.region}
+                        value={values.Region}
                         onChange={handleChange}
                     />
 
                     <SelectInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Country"
-                        name="country"
+                        name="Country"
                         errors={errors["Contact.Country"]}
-                        value={values.country}
+                        value={values.Country}
                         onChange={handleChange}
                     >
                         <option value=""></option>
@@ -175,10 +178,10 @@
                     <TextInput
                         className="pr-6 pb-8 w-full lg:w-1/2"
                         label="Postal Code"
-                        name="postal_code"
+                        name="PostalCode"
                         type="text"
                         errors={errors["Contact.PostalCode"]}
-                        value={values.postal_code}
+                        value={values.PostalCode}
                         onChange={handleChange}
                     />
                 </div>

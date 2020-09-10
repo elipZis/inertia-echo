@@ -1,12 +1,16 @@
 package util
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"regexp"
 	"strconv"
 	"strings"
 )
+
+//
+var keyErrorRegex, _ = regexp.Compile(`Key:(?P<Key>.*)Error:(?P<Value>.*)`)
 
 // Error container for return messages
 type Error struct {
@@ -36,19 +40,7 @@ func (this *Error) AddError(err error, name ...string) *Error {
 		message = v.Message.(string)
 		break
 	case validator.ValidationErrors:
-		r, _ := regexp.Compile(`Key:(?P<Key>.*)Error:(?P<Value>.*)`)
-		res := r.FindStringSubmatch(v.Error())
-		names := r.SubexpNames()
-		for i, _ := range res {
-			if i != 0 {
-				if names[i] == "Key" {
-					key = strings.TrimSuffix(strings.TrimPrefix(strings.TrimSpace(res[i]), "'"), "'")
-				}
-				if names[i] == "Value" {
-					message = strings.TrimSpace(res[i])
-				}
-			}
-		}
+		key, message = GetErrorsFromString(v.Error())
 	}
 
 	// this.Errors[key] = message
@@ -84,4 +76,33 @@ func (this *Error) Render(c echo.Context, name string, status ...int) error {
 	return c.Render(code, name, map[string]interface{}{
 		"errors": this.Errors,
 	})
+}
+
+// Return the errors map as key/error string
+func (this *Error) ToString() []string {
+	var errors []string
+	for k, v := range this.Errors {
+		for _, message := range v {
+			errors = append(errors, fmt.Sprintf("Key: %s Error: %s", k, message))
+		}
+	}
+	return errors
+}
+
+//
+func GetErrorsFromString(err string) (string, string) {
+	var key, value string
+	res := keyErrorRegex.FindStringSubmatch(err)
+	names := keyErrorRegex.SubexpNames()
+	for i, _ := range res {
+		if i != 0 {
+			if names[i] == "Key" {
+				key = strings.TrimSuffix(strings.TrimPrefix(strings.TrimSpace(res[i]), "'"), "'")
+			}
+			if names[i] == "Value" {
+				value = strings.TrimSpace(res[i])
+			}
+		}
+	}
+	return key, value
 }

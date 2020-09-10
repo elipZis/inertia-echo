@@ -11,7 +11,7 @@ import (
 //
 func (this *Handler) Contacts(c echo.Context) error {
 	if data, err := this.repository.GetContacts(); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	} else {
 		return this.Render(c, http.StatusOK, "Contacts/Index", map[string]interface{}{
 			"contacts": data,
@@ -25,7 +25,7 @@ func (this *Handler) EditContact(c echo.Context) error {
 	if id != "" {
 		id, _ := strconv.Atoi(id)
 		if data, err := this.repository.GetContactById(uint(id)); err != nil {
-			return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+			return this.ErrorResponse(c, err)
 		} else {
 			organizations, _ := this.repository.GetOrganizations()
 			return this.Render(c, http.StatusOK, "Contacts/Edit", map[string]interface{}{
@@ -49,7 +49,7 @@ func (this *Handler) CreateContact(c echo.Context) error {
 func (this *Handler) UpdateContact(c echo.Context) error {
 	m := model.Contact{}
 	if err := this.bindAndValidateRequest(c, &m); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
 	// No id, no update
 	if m.Id <= 0 {
@@ -58,30 +58,30 @@ func (this *Handler) UpdateContact(c echo.Context) error {
 	//
 	err := this.repository.UpdateContact(&m)
 	if err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
-	return this.Redirect(c, "/organizations", http.StatusFound, "GET")
+	return this.addSuccessFlash(c, "Contact updated").Redirect(c, "/contacts", http.StatusFound, "GET")
 }
 
 //
 func (this *Handler) StoreContact(c echo.Context) error {
 	m := model.Contact{}
-	if err := this.bindRequest(c, &m); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+	if err := this.bindAndValidateRequest(c, &m); err != nil {
+		return this.ErrorResponse(c, err)
 	}
 	//
 	err := this.repository.CreateContact(&m)
 	if err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
-	return this.Redirect(c, "/contacts", http.StatusFound, "GET")
+	return this.addSuccessFlash(c, "Contact stored").Redirect(c, "/contacts", http.StatusFound, "GET")
 }
 
 //
 func (this *Handler) DeleteContact(c echo.Context) error {
 	m := model.Contact{}
 	if err := this.bindRequest(c, &m); err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
 	// No id, no delete
 	if m.Id <= 0 {
@@ -90,7 +90,7 @@ func (this *Handler) DeleteContact(c echo.Context) error {
 	//
 	err := this.repository.DeleteModel(&m)
 	if err != nil {
-		return util.NewError().AddError(err).JSON(c, http.StatusUnprocessableEntity)
+		return this.ErrorResponse(c, err)
 	}
-	return this.Redirect(c, "/contacts", http.StatusFound, "GET")
+	return this.addSuccessFlash(c, "Contact deleted").Redirect(c, "/contacts", http.StatusFound, "GET")
 }

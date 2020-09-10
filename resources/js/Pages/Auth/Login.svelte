@@ -57,10 +57,10 @@
                 <TextInput
                         className="mt-10"
                         label="Email"
-                        name="email"
+                        name="Email"
                         type="email"
                         errors={errors["User.Email"]}
-                        value={values.email}
+                        value={values.Email}
                         onChange={handleChange}
                 />
 

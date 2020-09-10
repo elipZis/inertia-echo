@@ -5,11 +5,9 @@ import (
 	"elipzis.com/inertia-echo/repository"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
-	"encoding/gob"
+	"elipzis.com/inertia-echo/util"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/sessions"
-	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
@@ -39,6 +37,17 @@ func (this *Handler) Render(c echo.Context, code int, name string, data map[stri
 		data["user"] = user
 	}
 	return c.Render(code, name, data)
+}
+
+// Convenience error and redirect
+func (this *Handler) ErrorResponse(c echo.Context, err error) error {
+	this.setErrors(c, util.NewError().AddError(err))
+	return this.RedirectGET(c, c.Request().Referer())
+}
+
+// Convenience method
+func (this *Handler) RedirectGET(c echo.Context, path string) error {
+	return this.Redirect(c, strings.TrimPrefix(path, GetBaseUrl(c)), http.StatusFound, "GET")
 }
 
 //
@@ -139,49 +148,6 @@ func (this *Handler) bindAndValidateRequest(c echo.Context, model interface{}) e
 		return err
 	}
 	return nil
-}
-
-//
-func (this *Handler) setSession(c echo.Context, key string, value interface{}, options *sessions.Options) error {
-	// Register whatever object to be saved
-	gob.Register(value)
-
-	// Set it
-	s, _ := session.Get("session", c)
-	if options != nil {
-		s.Options = options
-	}
-	s.Values[key] = value
-	return s.Save(c.Request(), c.Response())
-}
-
-//
-func (this *Handler) deleteSession(c echo.Context) error {
-	s, _ := session.Get("session", c)
-	s.Options.MaxAge = -1
-	return s.Save(c.Request(), c.Response())
-}
-
-//
-func (this *Handler) addFlash(c echo.Context, value interface{}, vars ...string) error {
-	s, _ := session.Get("session", c)
-	s.AddFlash(value, vars...)
-	return s.Save(c.Request(), c.Response())
-}
-
-//
-func (this *Handler) addSuccessFlash(c echo.Context, value interface{}) error {
-	return this.addFlash(c, value, "_flash_success")
-}
-
-//
-func (this *Handler) addErrorFlash(c echo.Context, value interface{}) error {
-	return this.addFlash(c, value, "_flash_error")
-}
-
-//
-func (this *Handler) addWarningFlash(c echo.Context, value interface{}) error {
-	return this.addFlash(c, value, "_flash_warning")
 }
 
 //
