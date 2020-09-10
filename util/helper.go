@@ -5,12 +5,16 @@ import (
 	"reflect"
 )
 
-// Merge two maps, overriding existing keys from b --> a
+// Merge two maps, overriding existing keys from b --> a into a new map
 func MergeMaps(a map[string]interface{}, b map[string]interface{}) map[string]interface{} {
-	for k, v := range b {
-		a[k] = v
+	retVal := make(map[string]interface{}, len(a)+len(b))
+	for k, v := range a {
+		retVal[k] = v
 	}
-	return a
+	for k, v := range b {
+		retVal[k] = v
+	}
+	return retVal
 }
 
 // Check if a given value exists in the given array
