@@ -57,7 +57,7 @@
                 <TextInput
                         className="mt-10"
                         label="Email"
-                        name="Email"
+                        name="email"
                         type="email"
                         errors={errors["User.Email"]}
                         value={values.Email}
