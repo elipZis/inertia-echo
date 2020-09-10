@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/repository"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/service"
 	"elipzis.com/inertia-echo/util"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/elipzis/inertia-echo"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"

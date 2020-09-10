@@ -5,6 +5,7 @@ go 1.15
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/elipzis/inertia-echo v0.0.0-20200910131423-0256bb27d7e5
 	github.com/go-playground/validator/v10 v10.3.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/jinzhu/gorm v1.9.16

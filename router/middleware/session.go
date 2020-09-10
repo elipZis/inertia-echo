@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/util"
 	"fmt"
+	"github.com/elipzis/inertia-echo"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

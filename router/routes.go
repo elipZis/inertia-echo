@@ -2,8 +2,8 @@ package router
 
 import (
 	"elipzis.com/inertia-echo/handler"
-	"elipzis.com/inertia-echo/inertia"
 	"elipzis.com/inertia-echo/router/middleware"
+	"github.com/elipzis/inertia-echo"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
