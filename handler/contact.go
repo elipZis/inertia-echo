@@ -1,6 +1,7 @@
 package handler
 
 import (
+	dto "elipzis.com/inertia-echo/handler/model"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
 	"github.com/labstack/echo/v4"
@@ -10,7 +11,11 @@ import (
 
 //
 func (this *Handler) Contacts(c echo.Context) error {
-	if data, err := this.repository.GetContacts(); err != nil {
+	filter := dto.Filter{}
+	if err := this.bindRequest(c, &filter); err != nil {
+		return this.ErrorResponse(c, err)
+	}
+	if data, err := this.repository.GetContacts(&filter); err != nil {
 		return this.ErrorResponse(c, err)
 	} else {
 		return this.Render(c, http.StatusOK, "Contacts/Index", map[string]interface{}{
@@ -27,7 +32,7 @@ func (this *Handler) EditContact(c echo.Context) error {
 		if data, err := this.repository.GetContactById(uint(id)); err != nil {
 			return this.ErrorResponse(c, err)
 		} else {
-			organizations, _ := this.repository.GetOrganizations()
+			organizations, _ := this.repository.GetOrganizations(nil)
 			return this.Render(c, http.StatusOK, "Contacts/Edit", map[string]interface{}{
 				"data":          data,
 				"organizations": organizations,
@@ -39,7 +44,7 @@ func (this *Handler) EditContact(c echo.Context) error {
 
 //
 func (this *Handler) CreateContact(c echo.Context) error {
-	organizations, _ := this.repository.GetOrganizations()
+	organizations, _ := this.repository.GetOrganizations(nil)
 	return this.Render(c, http.StatusOK, "Contacts/Create", map[string]interface{}{
 		"organizations": organizations,
 	})

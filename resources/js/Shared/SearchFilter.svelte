@@ -6,7 +6,8 @@
     import pickBy from 'lodash/pickBy';
 
     let { filters } = $page;
-    $: filters = $page.filters;
+    $: filters = $page.filters ?? [];
+    filters = filters ?? [];
 
     const route = window.route;
 
@@ -14,7 +15,7 @@
     let values = {
         role: filters.role || '', // role is used only on users page
         search: filters.search || '',
-        trashed: filters.trashed || ''
+        deleted: filters.deleted || ''
     };
 
     let prevValues;
@@ -27,7 +28,7 @@
         values = {
             role: '',
             search: '',
-            trashed: ''
+            deleted: ''
         };
     }
 
@@ -82,14 +83,14 @@
                 {/if}
 
                 <SelectInput
-                    label="Trashed"
-                    name="trashed"
-                    value={values.trashed}
+                    label="Deleted"
+                    name="deleted"
+                    value={values.deleted}
                     onChange={handleChange}
                 >
                     <option value=""></option>
-                    <option value="with">With Trashed</option>
-                    <option value="only">Only Trashed</option>
+                    <option value="with">With Deleted</option>
+                    <option value="only">Only Deleted</option>
                 </SelectInput>
             </div>
         </div>

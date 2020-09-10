@@ -19,7 +19,7 @@
         <h1 class="mb-8 font-bold text-3xl">Contacts</h1>
 
         <div class="mb-6 flex justify-between items-center">
-<!--            <SearchFilter />-->
+            <SearchFilter />
 
             <InertiaLink class="btn-indigo" href={route('contacts.create')}>
                 <span>Create</span>

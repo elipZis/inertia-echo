@@ -1,6 +1,7 @@
 package repository
 
 import (
+	dto "elipzis.com/inertia-echo/handler/model"
 	"elipzis.com/inertia-echo/repository/model"
 )
 
@@ -15,9 +16,14 @@ func (this *Repository) CreateContact(model *model.Contact) error {
 }
 
 //
-func (this *Repository) GetContacts() (*[]model.Contact, error) {
+func (this *Repository) GetContacts(filter *dto.Filter) (*[]model.Contact, error) {
+	if filter == nil {
+		filter = &dto.Filter{}
+	}
 	var m []model.Contact
-	if err := this.Conn.Preload("Organization").Find(&m).Error; err != nil {
+	if err := this.Conn.Preload("Organization").
+		Where("LOWER(first_name) LIKE ? or LOWER(last_name) LIKE ?", "%"+filter.Search+"%", "%"+filter.Search+"%").
+		Find(&m).Error; err != nil {
 		return nil, err
 	}
 	return &m, nil

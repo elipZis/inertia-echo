@@ -1,6 +1,7 @@
 package handler
 
 import (
+	dto "elipzis.com/inertia-echo/handler/model"
 	"elipzis.com/inertia-echo/repository/model"
 	"elipzis.com/inertia-echo/util"
 	"github.com/labstack/echo/v4"
@@ -10,7 +11,11 @@ import (
 
 //
 func (this *Handler) Organizations(c echo.Context) error {
-	if data, err := this.repository.GetOrganizations(); err != nil {
+	filter := dto.Filter{}
+	if err := this.bindRequest(c, &filter); err != nil {
+		return this.ErrorResponse(c, err)
+	}
+	if data, err := this.repository.GetOrganizations(&filter); err != nil {
 		return this.ErrorResponse(c, err)
 	} else {
 		return this.Render(c, http.StatusOK, "Organizations/Index", map[string]interface{}{

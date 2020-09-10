@@ -1,6 +1,7 @@
 package repository
 
 import (
+	dto "elipzis.com/inertia-echo/handler/model"
 	"elipzis.com/inertia-echo/repository/model"
 	"errors"
 )
@@ -22,9 +23,14 @@ func (this *Repository) CreateUser(model *model.User) error {
 }
 
 //
-func (this *Repository) GetUsers() (*[]model.User, error) {
+func (this *Repository) GetUsers(filter *dto.Filter) (*[]model.User, error) {
+	if filter == nil {
+		filter = &dto.Filter{}
+	}
 	var m []model.User
-	if err := this.Conn.Find(&m).Error; err != nil {
+	if err := this.Conn.
+		Where("LOWER(first_name) LIKE ? or LOWER(last_name) LIKE ?", "%"+filter.Search+"%", "%"+filter.Search+"%").
+		Find(&m).Error; err != nil {
 		return nil, err
 	}
 	return &m, nil
