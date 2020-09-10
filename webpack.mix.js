@@ -20,6 +20,7 @@ require('laravel-mix-svelte');
 
 mix.js('resources/js/app.js', 'js')
     .postCss('resources/css/app.css', 'css/app.css')
+    .copyDirectory('resources/assets', 'public/assets')
     .svelte({
         dev: !mix.inProduction()
     })
