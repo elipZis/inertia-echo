@@ -60,7 +60,7 @@
                         name="email"
                         type="email"
                         errors={errors["User.Email"]}
-                        value={values.Email}
+                        value={values.email}
                         onChange={handleChange}
                 />
 
