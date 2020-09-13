@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"elipzis.com/inertia-echo/util"
-	"fmt"
 	"github.com/elipzis/inertia-echo"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -68,9 +67,9 @@ func SessionMiddlewareWithConfig(config SessionMiddlewareConfig) echo.Middleware
 
 // Cleans and adds any new session flashes
 func shareFlashes(c echo.Context, inertia *inertia.Inertia) {
-	inertia.Share("flash", map[string]interface{}{})
+	inertia.Share(c, "flash", map[string]interface{}{})
 	if s, err := session.Get("session", c); err == nil {
-		inertia.Share("flash", map[string]interface{}{
+		inertia.Share(c, "flash", map[string]interface{}{
 			"success": s.Flashes("_flash_success"),
 			"error":   s.Flashes("_flash_error"),
 			"warning": s.Flashes("_flash_warning"),
@@ -81,7 +80,7 @@ func shareFlashes(c echo.Context, inertia *inertia.Inertia) {
 
 // Cleans and adds any new session errors
 func shareErrors(c echo.Context, inertia *inertia.Inertia) {
-	inertia.Share("errors", map[string]interface{}{})
+	inertia.Share(c, "errors", map[string]interface{}{})
 	if s, err := session.Get("session", c); err == nil {
 		errorFlashes := s.Flashes("_errors")
 		_ = s.Save(c.Request(), c.Response())
@@ -89,7 +88,6 @@ func shareErrors(c echo.Context, inertia *inertia.Inertia) {
 			switch reflect.TypeOf(errorFlashes).Kind() {
 			case reflect.Slice:
 				if len(errorFlashes) > 0 {
-					fmt.Println(errorFlashes)
 					errors := make(map[string]interface{})
 					flashes := errorFlashes[0].([]string)
 					for _, v := range flashes {
@@ -100,7 +98,7 @@ func shareErrors(c echo.Context, inertia *inertia.Inertia) {
 							errors[key] = []string{value}
 						}
 					}
-					inertia.Share("errors", errors)
+					inertia.Share(c, "errors", errors)
 				}
 			}
 		}

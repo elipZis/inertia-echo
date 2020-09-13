@@ -41,9 +41,7 @@
 
     function handleSubmit(e) {
         sending = true;
-        console.log(values);
-        const formData = toFormData(values);
-        Inertia.post(route('contacts.update', {contact: data.Id}), formData).then(() => sending = false);
+        Inertia.post(route('contacts.update', {contact: data.Id}), values).then(() => sending = false);
     }
 
     function destroy() {
