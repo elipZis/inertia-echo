@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"reflect"
+	"sync"
 )
 
 // The Base "X-Inertia" header prefixes
@@ -29,8 +30,9 @@ type Inertia struct {
 
 	templates *template.Template
 
-	sharedProps map[string]map[string]interface{}
-	version     interface{}
+	sharedProps      map[string]map[string]interface{}
+	sharedPropsMutex *sync.Mutex
+	version          interface{}
 }
 
 //
@@ -107,6 +109,7 @@ func NewInertiaWithConfig(config InertiaConfig) (this *Inertia) {
 	this = new(Inertia)
 	this.config = config
 	this.sharedProps = make(map[string]map[string]interface{})
+	this.sharedPropsMutex = &sync.Mutex{}
 	this.config.Echo.Renderer = this
 	this.config.Echo.HTTPErrorHandler = this.config.HTTPErrorHandler
 	log.Printf("[Inertia] Loading templates out of %s", this.config.TemplatesPath)
@@ -146,6 +149,7 @@ func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.C
 // Share a key/value pairs with every response
 func (this *Inertia) Share(c echo.Context, key string, value interface{}) {
 	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	this.sharedPropsMutex.Lock()
 	if reqSharedProps, ok := this.sharedProps[rid]; ok {
 		reqSharedProps[key] = value
 	} else {
@@ -153,25 +157,32 @@ func (this *Inertia) Share(c echo.Context, key string, value interface{}) {
 			key: value,
 		}
 	}
+	this.sharedPropsMutex.Unlock()
 }
 
 // Share multiple key/values with every response
 func (this *Inertia) Shares(c echo.Context, values map[string]interface{}) {
 	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	this.sharedPropsMutex.Lock()
 	if _, ok := this.sharedProps[rid]; !ok {
 		this.sharedProps[rid] = make(map[string]interface{})
 	}
+	this.sharedPropsMutex.Unlock()
 
 	for key, value := range values {
+		this.sharedPropsMutex.Lock()
 		this.sharedProps[rid][key] = value
+		this.sharedPropsMutex.Unlock()
 	}
 }
 
 // Get a specific key-value from the shared information
 func (this *Inertia) GetShared(c echo.Context, key string) (interface{}, bool) {
 	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	this.sharedPropsMutex.Lock()
 	if reqSharedProps, ok := this.sharedProps[rid]; ok {
 		value, ok := reqSharedProps[key]
+		this.sharedPropsMutex.Unlock()
 		return value, ok
 	}
 	return nil, false
@@ -180,8 +191,10 @@ func (this *Inertia) GetShared(c echo.Context, key string) (interface{}, bool) {
 // Returns the shared props (if any) and deletes them
 func (this *Inertia) Shared(c echo.Context) map[string]interface{} {
 	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	this.sharedPropsMutex.Lock()
 	sharedProps := this.sharedProps[rid]
 	delete(this.sharedProps, rid)
+	this.sharedPropsMutex.Unlock()
 	return sharedProps
 }
 
