@@ -8,6 +8,7 @@ import (
 	"github.com/elipzis/inertia-echo/util"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -28,7 +29,7 @@ type Inertia struct {
 
 	templates *template.Template
 
-	sharedProps map[string]interface{}
+	sharedProps map[string]map[string]interface{}
 	version     interface{}
 }
 
@@ -41,6 +42,7 @@ type InertiaConfig struct {
 	RootView         string
 	TemplateFuncMap  template.FuncMap
 	HTTPErrorHandler echo.HTTPErrorHandler
+	RequestIDConfig  middleware.RequestIDConfig
 }
 
 //
@@ -86,6 +88,8 @@ func NewDefaultInertiaConfig(e *echo.Echo) (this InertiaConfig) {
 		},
 	}
 
+	this.RequestIDConfig = middleware.DefaultRequestIDConfig
+
 	return this
 }
 
@@ -102,55 +106,83 @@ func NewInertiaWithConfig(config InertiaConfig) (this *Inertia) {
 
 	this = new(Inertia)
 	this.config = config
-	this.sharedProps = make(map[string]interface{})
+	this.sharedProps = make(map[string]map[string]interface{})
 	this.config.Echo.Renderer = this
 	this.config.Echo.HTTPErrorHandler = this.config.HTTPErrorHandler
 	log.Printf("[Inertia] Loading templates out of %s", this.config.TemplatesPath)
 	this.templates = template.Must(template.New("").Funcs(this.config.TemplateFuncMap).ParseGlob(this.config.TemplatesPath))
 	// Try to set a version off of the mix-manifest, if any
 	this.SetMixVersion()
+	// Register a unique id generator to identify requests
+	this.config.Echo.Use(middleware.RequestIDWithConfig(this.config.RequestIDConfig))
 
 	return this
 }
 
 // Render renders a template document
 func (this *Inertia) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	// Always empty the shared props for this request
+	sharedProps := this.Shared(c)
 	isMap := reflect.TypeOf(data).Kind() == reflect.Map
 	if this.templates.Lookup(name) != nil {
 		if isMap {
 			viewContext := data.(map[string]interface{})
 			viewContext["reverse"] = c.Echo().Reverse
-			viewContext["shared"] = this.sharedProps
+			viewContext["shared"] = sharedProps
 		}
 		return this.templates.ExecuteTemplate(w, name, data)
 	}
 
 	if isMap {
-		return NewResponse(name, util.MergeMaps(this.sharedProps, data.(map[string]interface{})), this.config.RootView, this.GetVersion()).Status(c.Response().Status).ToResponse(c)
+		if sharedProps != nil {
+			return NewResponse(name, util.MergeMaps(sharedProps, data.(map[string]interface{})), this.config.RootView, this.GetVersion()).Status(c.Response().Status).ToResponse(c)
+		} else {
+			return NewResponse(name, data.(map[string]interface{}), this.config.RootView, this.GetVersion()).Status(c.Response().Status).ToResponse(c)
+		}
 	}
-	return NewResponse(name, this.sharedProps, this.config.RootView, this.GetVersion()).Status(c.Response().Status).ToResponse(c)
+	return NewResponse(name, sharedProps, this.config.RootView, this.GetVersion()).Status(c.Response().Status).ToResponse(c)
 }
 
 // Share a key/value pairs with every response
-func (this *Inertia) Share(key string, value interface{}) {
-	this.sharedProps[key] = value
+func (this *Inertia) Share(c echo.Context, key string, value interface{}) {
+	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	if reqSharedProps, ok := this.sharedProps[rid]; ok {
+		reqSharedProps[key] = value
+	} else {
+		this.sharedProps[rid] = map[string]interface{}{
+			key: value,
+		}
+	}
 }
 
 // Share multiple key/values with every response
-func (this *Inertia) Shares(values map[string]interface{}) {
+func (this *Inertia) Shares(c echo.Context, values map[string]interface{}) {
+	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	if _, ok := this.sharedProps[rid]; !ok {
+		this.sharedProps[rid] = make(map[string]interface{})
+	}
+
 	for key, value := range values {
-		this.sharedProps[key] = value
+		this.sharedProps[rid][key] = value
 	}
 }
 
 // Get a specific key-value from the shared information
-func (this *Inertia) GetShared(key string) (interface{}, bool) {
-	value, ok := this.sharedProps[key]
-	return value, ok
+func (this *Inertia) GetShared(c echo.Context, key string) (interface{}, bool) {
+	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	if reqSharedProps, ok := this.sharedProps[rid]; ok {
+		value, ok := reqSharedProps[key]
+		return value, ok
+	}
+	return nil, false
 }
 
-func (this *Inertia) Shared() map[string]interface{} {
-	return this.sharedProps
+// Returns the shared props (if any) and deletes them
+func (this *Inertia) Shared(c echo.Context) map[string]interface{} {
+	rid := c.Request().Header.Get(echo.HeaderXRequestID)
+	sharedProps := this.sharedProps[rid]
+	delete(this.sharedProps, rid)
+	return sharedProps
 }
 
 // Set a version callback "func() string"

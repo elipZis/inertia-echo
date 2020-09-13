@@ -2,6 +2,7 @@ package util
 
 import (
 	"github.com/labstack/echo/v4"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -50,6 +51,10 @@ func NewZiggy(echo *echo.Echo, page map[string]interface{}) Ziggy {
 
 	this.Routes = make(map[string]ZiggyRoute, len(echo.Routes()))
 	for _, route := range echo.Routes() {
+		// Do not include the generate functions of echo and others
+		if matched, _ := regexp.MatchString(`.func\d+$`, route.Name); matched {
+			continue
+		}
 		if ziggyRoute, ok := this.Routes[route.Name]; ok {
 			ziggyRoute.Methods = append(ziggyRoute.Methods, route.Method)
 			this.Routes[route.Name] = ziggyRoute
