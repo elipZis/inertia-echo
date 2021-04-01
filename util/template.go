@@ -12,7 +12,8 @@ import (
 //
 func Inertia(v interface{}) template.HTML {
 	retVal, _ := json.Marshal(v)
-	return template.HTML(fmt.Sprintf("<div id='app' data-page='%s'></div>", string(retVal)))
+	data := template.HTMLEscapeString(string(retVal))
+	return template.HTML(fmt.Sprintf("<div id='app' data-page='%s'></div>", data))
 }
 
 //
